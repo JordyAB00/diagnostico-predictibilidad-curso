@@ -404,7 +404,7 @@
             const discussionQuestions = document.getElementById('discussionQuestions');
             
             let timerInterval;
-            let secondsRemaining = 180; // 3 minutos
+            let secondsRemaining = 600; // 10 minutos
             
             // Inicializar casos
             function initializeCases() {
@@ -441,7 +441,7 @@
                 
                 // Reiniciar el temporizador
                 clearInterval(timerInterval);
-                secondsRemaining = 180;
+                secondsRemaining = 600;
                 updateTimerDisplay();
                 startTimer();
             }
