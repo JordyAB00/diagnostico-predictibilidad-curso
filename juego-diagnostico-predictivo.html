@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Juego Interactivo: Diagnóstico vs. Predictivo</title>
+    <style>
+        :root {
+            --primary-color: #4a148c;
+            --secondary-color: #7c43bd;
+            --diagnostic-color: #3498db;
+            --predictive-color: #2ecc71;
+            --error-color: #e74c3c;
+            --accent-color: #ff6f00;
+            --text-color: #333;
+            --light-bg: #f5f5f5;
+            --white: #ffffff;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--light-bg);
+            color: var(--text-color);
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--accent-color);
+            padding-bottom: 10px;
+        }
+        
+        h1 {
+            margin-bottom: 10px;
+        }
+        
+        .instructions {
+            background-color: var(--white);
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+            margin-bottom: 30px;
+        }
+        
+        .game-container {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+        
+        .items-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: center;
+        }
+        
+        .item {
+            background-color: var(--white);
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+            width: 250px;
+            cursor: grab;
+            transition: transform 0.2s, box-shadow 0.2s;
+            user-select: none;
+        }
+        
+        .item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+        }
+        
+        .item.dragging {
+            opacity: 0.8;
+            transform: scale(1.05);
+        }
+        
+        .categories-container {
+            display: flex;
+            gap: 30px;
+            justify-content: center;
+        }
+        
+        .category {
+            flex: 1;
+            min-height: 400px;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .category h2 {
+            margin-top: 0;
+            color: var(--white);
+            text-align: center;
+        }
+        
+        .diagnostic {
+            background-color: var(--diagnostic-color);
+        }
+        
+        .predictive {
+            background-color: var(--predictive-color);
+        }
+        
+        .drop-area {
+            width: 100%;
+            min-height: 350px;
+            background-color: rgba(255, 255, 255, 0.8);
+            border-radius: 8px;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            overflow-y: auto;
+        }
+        
+        .placeholder {
+            font-style: italic;
+            color: #777;
+            text-align: center;
+            margin-top: 30px;
+        }
+        
+        .controls {
+            text-align: center;
+            margin-top: 30px;
+        }
+        
+        .button {
+            background-color: var(--primary-color);
+            color: var(--white);
+            border: none;
+            padding: 12px 24px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+            margin: 0 10px;
+        }
+        
+        .button:hover {
+            background-color: var(--secondary-color);
+        }
+        
+        .results-container {
+            background-color: var(--white);
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 30px;
+            box-shadow: var(--shadow);
+            display: none;
+        }
+        
+        .result-item {
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 4px;
+        }
+        
+        .result-item.correct {
+            background-color: rgba(46, 204, 113, 0.2);
+            border-left: 4px solid var(--predictive-color);
+        }
+        
+        .result-item.incorrect {
+            background-color: rgba(231, 76, 60, 0.2);
+            border-left: 4px solid var(--error-color);
+        }
+        
+        .score {
+            font-size: 24px;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .feedback {
+            font-style: italic;
+            text-align: center;
+            margin-top: 20px;
+        }
+        
+        .timer {
+            font-size: 24px;
+            text-align: center;
+            margin-bottom: 20px;
+            color: var(--primary-color);
+            font-weight: bold;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal-content {
+            background-color: var(--white);
+            padding: 30px;
+            border-radius: 8px;
+            max-width: 600px;
+            width: 90%;
+            box-shadow: var(--shadow);
+            text-align: center;
+        }
+        
+        .modal h2 {
+            color: var(--primary-color);
+            margin-top: 0;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        .discussion-questions {
+            background-color: var(--light-bg);
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        
+        .discussion-questions h3 {
+            color: var(--primary-color);
+            margin-top: 0;
+        }
+        
+        .discussion-questions ul {
+            padding-left: 20px;
+        }
+        
+        .discussion-questions li {
+            margin-bottom: 10px;
+        }
+        
+        @media (max-width: 768px) {
+            .categories-container {
+                flex-direction: column;
+            }
+            
+            .category {
+                min-height: 300px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Juego Interactivo: Diagnóstico vs. Predictivo</h1>
+        <p>Clasifica correctamente los casos de análisis de datos para reforzar tu comprensión</p>
+    </header>
+    
+    <div class="instructions">
+        <h2>Instrucciones</h2>
+        <p>Arrastra cada caso hacia la categoría correcta: <strong>Análisis Diagnóstico</strong> (¿Por qué sucedió?) o <strong>Análisis Predictivo</strong> (¿Qué podría suceder?). Cuando hayas clasificado todos los casos, haz clic en "Verificar" para comprobar tus respuestas.</p>
+        <div class="timer" id="timer">03:00</div>
+    </div>
+    
+    <div class="game-container">
+        <div class="items-container" id="itemsContainer">
+            <!-- Los casos se generarán dinámicamente con JavaScript -->
+        </div>
+        
+        <div class="categories-container">
+            <div class="category diagnostic">
+                <h2>Análisis Diagnóstico</h2>
+                <p style="color: white; text-align: center;">¿Por qué sucedió?</p>
+                <div class="drop-area" id="diagnosticArea">
+                    <div class="placeholder">Arrastra aquí los casos de análisis diagnóstico</div>
+                </div>
+            </div>
+            
+            <div class="category predictive">
+                <h2>Análisis Predictivo</h2>
+                <p style="color: white; text-align: center;">¿Qué podría suceder?</p>
+                <div class="drop-area" id="predictiveArea">
+                    <div class="placeholder">Arrastra aquí los casos de análisis predictivo</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="controls">
+            <button class="button" id="checkButton">Verificar Respuestas</button>
+            <button class="button" id="resetButton">Reiniciar Juego</button>
+        </div>
+        
+        <div class="results-container" id="resultsContainer">
+            <div class="score" id="score"></div>
+            <div id="resultsList"></div>
+            <div class="feedback" id="feedback"></div>
+        </div>
+    </div>
+    
+    <div class="modal" id="completionModal">
+        <div class="modal-content">
+            <h2>¡Tiempo finalizado!</h2>
+            <p>Has clasificado <span id="completedItems">0</span> de <span id="totalItems">0</span> casos.</p>
+            <p>Haz clic en "Verificar Respuestas" para ver tu puntuación actual o en "Continuar" para seguir clasificando (sin tiempo adicional).</p>
+            <button class="button" id="continueButton">Continuar</button>
+            <button class="button" id="verifyNowButton">Verificar Respuestas</button>
+        </div>
+    </div>
+    
+    <div class="discussion-questions hidden" id="discussionQuestions">
+        <h3>Preguntas para discusión en grupo</h3>
+        <ul>
+            <li>¿Qué características distinguen claramente a un análisis diagnóstico de uno predictivo?</li>
+            <li>¿En qué situaciones podría ser ambiguo determinar si un caso es diagnóstico o predictivo?</li>
+            <li>¿Cómo podrían utilizarse ambos tipos de análisis de forma complementaria en un escenario empresarial?</li>
+            <li>De los casos analizados, ¿cuál les resultó más interesante o relevante para su campo profesional?</li>
+            <li>¿Qué papel jugaría la inteligencia artificial en cada uno de estos escenarios?</li>
+        </ul>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Casos para clasificar
+            const cases = [
+                {
+                    id: 1,
+                    text: "Analizar las causas de un aumento del 30% en la tasa de abandono de clientes durante el último trimestre",
+                    type: "diagnostic" // diagnóstico: busca causas de algo que ya sucedió
+                },
+                {
+                    id: 2,
+                    text: "Identificar qué clientes tienen mayor probabilidad de cancelar su suscripción en los próximos 60 días",
+                    type: "predictive" // predictivo: anticipa eventos futuros
+                },
+                {
+                    id: 3,
+                    text: "Determinar los factores que contribuyeron al fracaso de la última campaña de marketing",
+                    type: "diagnostic" // diagnóstico: busca entender causas pasadas
+                },
+                {
+                    id: 4,
+                    text: "Estimar la demanda de un nuevo producto basándose en datos históricos y tendencias del mercado",
+                    type: "predictive" // predictivo: proyecta comportamiento futuro
+                },
+                {
+                    id: 5,
+                    text: "Identificar los cuellos de botella en la cadena de suministro que causaron retrasos en las entregas",
+                    type: "diagnostic" // diagnóstico: analiza problemas existentes
+                },
+                {
+                    id: 6,
+                    text: "Calcular la probabilidad de que un equipo industrial falle en los próximos 30 días basándose en datos de sensores",
+                    type: "predictive" // predictivo: anticipa posibles fallos
+                },
+                {
+                    id: 7,
+                    text: "Analizar por qué las ventas en una región específica fueron un 25% inferiores a lo esperado",
+                    type: "diagnostic" // diagnóstico: examina razones de resultados pasados
+                },
+                {
+                    id: 8,
+                    text: "Proyectar cómo cambiarán los patrones de compra durante la próxima temporada festiva",
+                    type: "predictive" // predictivo: anticipa comportamientos futuros
+                },
+                {
+                    id: 9,
+                    text: "Examinar qué factores contribuyeron a la alta rotación de personal en el departamento de ventas",
+                    type: "diagnostic" // diagnóstico: busca causas de problemas actuales
+                },
+                {
+                    id: 10,
+                    text: "Identificar qué productos probablemente se agotarán en inventario en las próximas dos semanas",
+                    type: "predictive" // predictivo: anticipa situaciones futuras
+                }
+            ];
+            
+            // Referencias a elementos DOM
+            const itemsContainer = document.getElementById('itemsContainer');
+            const diagnosticArea = document.getElementById('diagnosticArea');
+            const predictiveArea = document.getElementById('predictiveArea');
+            const checkButton = document.getElementById('checkButton');
+            const resetButton = document.getElementById('resetButton');
+            const resultsContainer = document.getElementById('resultsContainer');
+            const scoreDisplay = document.getElementById('score');
+            const resultsList = document.getElementById('resultsList');
+            const feedbackDisplay = document.getElementById('feedback');
+            const timerDisplay = document.getElementById('timer');
+            const completionModal = document.getElementById('completionModal');
+            const completedItemsDisplay = document.getElementById('completedItems');
+            const totalItemsDisplay = document.getElementById('totalItems');
+            const continueButton = document.getElementById('continueButton');
+            const verifyNowButton = document.getElementById('verifyNowButton');
+            const discussionQuestions = document.getElementById('discussionQuestions');
+            
+            let timerInterval;
+            let secondsRemaining = 180; // 3 minutos
+            
+            // Inicializar casos
+            function initializeCases() {
+                // Mezclar los casos aleatoriamente
+                const shuffledCases = [...cases].sort(() => Math.random() - 0.5);
+                
+                // Actualizar el contador total
+                totalItemsDisplay.textContent = shuffledCases.length;
+                
+                // Crear elementos HTML para cada caso
+                itemsContainer.innerHTML = '';
+                shuffledCases.forEach(caseItem => {
+                    const caseElement = document.createElement('div');
+                    caseElement.className = 'item';
+                    caseElement.textContent = caseItem.text;
+                    caseElement.dataset.id = caseItem.id;
+                    caseElement.dataset.type = caseItem.type;
+                    caseElement.draggable = true;
+                    
+                    // Eventos de arrastre
+                    caseElement.addEventListener('dragstart', handleDragStart);
+                    caseElement.addEventListener('dragend', handleDragEnd);
+                    
+                    itemsContainer.appendChild(caseElement);
+                });
+                
+                // Restablecer áreas de destino
+                diagnosticArea.innerHTML = '<div class="placeholder">Arrastra aquí los casos de análisis diagnóstico</div>';
+                predictiveArea.innerHTML = '<div class="placeholder">Arrastra aquí los casos de análisis predictivo</div>';
+                
+                // Reiniciar resultados
+                resultsContainer.style.display = 'none';
+                discussionQuestions.classList.add('hidden');
+                
+                // Reiniciar el temporizador
+                clearInterval(timerInterval);
+                secondsRemaining = 180;
+                updateTimerDisplay();
+                startTimer();
+            }
+            
+            // Funciones para el temporizador
+            function startTimer() {
+                timerInterval = setInterval(() => {
+                    secondsRemaining--;
+                    updateTimerDisplay();
+                    
+                    if (secondsRemaining <= 0) {
+                        clearInterval(timerInterval);
+                        showCompletionModal();
+                    }
+                }, 1000);
+            }
+            
+            function updateTimerDisplay() {
+                const minutes = Math.floor(secondsRemaining / 60);
+                const seconds = secondsRemaining % 60;
+                timerDisplay.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                
+                if (secondsRemaining <= 30) {
+                    timerDisplay.style.color = 'red';
+                } else {
+                    timerDisplay.style.color = 'var(--primary-color)';
+                }
+            }
+            
+            function showCompletionModal() {
+                const itemsInCategories = document.querySelectorAll('.drop-area .item').length;
+                completedItemsDisplay.textContent = itemsInCategories;
+                completionModal.style.display = 'flex';
+            }
+            
+            // Funciones para arrastrar y soltar
+            function handleDragStart(e) {
+                this.classList.add('dragging');
+                e.dataTransfer.setData('text/plain', this.dataset.id);
+                e.dataTransfer.effectAllowed = 'move';
+            }
+            
+            function handleDragEnd() {
+                this.classList.remove('dragging');
+            }
+            
+            function handleDragOver(e) {
+                e.preventDefault();
+                e.dataTransfer.dropEffect = 'move';
+            }
+            
+            function handleDrop(e) {
+                e.preventDefault();
+                const id = e.dataTransfer.getData('text/plain');
+                const draggedItem = document.querySelector(`.item[data-id="${id}"]`);
+                
+                if (draggedItem) {
+                    // Eliminar placeholders si están presentes
+                    const placeholder = this.querySelector('.placeholder');
+                    if (placeholder) {
+                        placeholder.remove();
+                    }
+                    
+                    // Mover el elemento al área de destino
+                    this.appendChild(draggedItem);
+                    
+                    // Verificar si todos los elementos han sido clasificados
+                    const remainingItems = itemsContainer.querySelectorAll('.item').length;
+                    if (remainingItems === 0) {
+                        clearInterval(timerInterval);
+                        timerDisplay.textContent = "¡Clasificación completada!";
+                    }
+                }
+            }
+            
+            // Verificar respuestas
+            function checkAnswers() {
+                let correctCount = 0;
+                let totalClassified = 0;
+                
+                resultsList.innerHTML = '';
+                
+                // Verificar elementos en el área de diagnóstico
+                const diagnosticItems = diagnosticArea.querySelectorAll('.item');
+                diagnosticItems.forEach(item => {
+                    const isCorrect = item.dataset.type === 'diagnostic';
+                    const resultItem = document.createElement('div');
+                    resultItem.className = `result-item ${isCorrect ? 'correct' : 'incorrect'}`;
+                    
+                    resultItem.innerHTML = `
+                        <strong>${isCorrect ? '✓ Correcto' : '✗ Incorrecto'}</strong>: "${item.textContent}" 
+                        ${isCorrect ? 'es un análisis diagnóstico' : 'es un análisis predictivo, no diagnóstico'}
+                    `;
+                    
+                    resultsList.appendChild(resultItem);
+                    
+                    if (isCorrect) correctCount++;
+                    totalClassified++;
+                });
+                
+                // Verificar elementos en el área predictiva
+                const predictiveItems = predictiveArea.querySelectorAll('.item');
+                predictiveItems.forEach(item => {
+                    const isCorrect = item.dataset.type === 'predictive';
+                    const resultItem = document.createElement('div');
+                    resultItem.className = `result-item ${isCorrect ? 'correct' : 'incorrect'}`;
+                    
+                    resultItem.innerHTML = `
+                        <strong>${isCorrect ? '✓ Correcto' : '✗ Incorrecto'}</strong>: "${item.textContent}" 
+                        ${isCorrect ? 'es un análisis predictivo' : 'es un análisis diagnóstico, no predictivo'}
+                    `;
+                    
+                    resultsList.appendChild(resultItem);
+                    
+                    if (isCorrect) correctCount++;
+                    totalClassified++;
+                });
+                
+                // Calcular puntuación
+                const score = totalClassified > 0 ? Math.round((correctCount / totalClassified) * 100) : 0;
+                scoreDisplay.textContent = `Puntuación: ${score}% (${correctCount} de ${totalClassified} correctos)`;
+                
+                // Mostrar feedback basado en la puntuación
+                if (score >= 90) {
+                    feedbackDisplay.textContent = "¡Excelente! Dominas la diferencia entre análisis diagnóstico y predictivo.";
+                } else if (score >= 70) {
+                    feedbackDisplay.textContent = "¡Buen trabajo! Comprendes la mayoría de los conceptos. Revisa los casos incorrectos.";
+                } else if (score >= 50) {
+                    feedbackDisplay.textContent = "Estás en buen camino. Dedica tiempo a repasar las diferencias clave entre ambos tipos de análisis.";
+                } else {
+                    feedbackDisplay.textContent = "Parece que necesitas repasar los conceptos. No te preocupes, es normal al principio. Revisa la presentación y vuelve a intentarlo.";
+                }
+                
+                // Mostrar resultados y preguntas de discusión
+                resultsContainer.style.display = 'block';
+                discussionQuestions.classList.remove('hidden');
+                
+                // Detener el temporizador si está activo
+                clearInterval(timerInterval);
+            }
+            
+            // Configurar eventos de arrastrar y soltar para las áreas
+            diagnosticArea.addEventListener('dragover', handleDragOver);
+            diagnosticArea.addEventListener('drop', handleDrop);
+            
+            predictiveArea.addEventListener('dragover', handleDragOver);
+            predictiveArea.addEventListener('drop', handleDrop);
+            
+            // Configurar botones
+            checkButton.addEventListener('click', checkAnswers);
+            resetButton.addEventListener('click', initializeCases);
+            
+            // Configurar botones del modal
+            continueButton.addEventListener('click', function() {
+                completionModal.style.display = 'none';
+            });
+            
+            verifyNowButton.addEventListener('click', function() {
+                completionModal.style.display = 'none';
+                checkAnswers();
+            });
+            
+            // Inicializar el juego
+            initializeCases();
+        });
+    </script>
+</body>
+</html>
