@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Introducción al Análisis Diagnóstico y Predictivo</title>
+    <style>
+        :root {
+            --primary-color: #4a148c;
+            --secondary-color: #7c43bd;
+            --accent-color: #ff6f00;
+            --text-color: #333;
+            --light-bg: #f5f5f5;
+            --white: #ffffff;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--light-bg);
+            color: var(--text-color);
+            overflow-x: hidden;
+        }
+        
+        /* Header */
+        header {
+            background-color: var(--primary-color);
+            color: var(--white);
+            padding: 1rem;
+            text-align: center;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            box-shadow: var(--shadow);
+        }
+        
+        header h1 {
+            margin: 0;
+            font-size: 1.5rem;
+        }
+        
+        /* Navigation */
+        nav {
+            display: flex;
+            justify-content: center;
+            background-color: var(--secondary-color);
+            padding: 0.5rem;
+            position: fixed;
+            width: 100%;
+            top: 4rem;
+            z-index: 999;
+        }
+        
+        nav button {
+            background-color: transparent;
+            border: none;
+            color: var(--white);
+            padding: 0.5rem 1rem;
+            margin: 0 0.5rem;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+        
+        nav button:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+        
+        nav button.active {
+            background-color: var(--accent-color);
+        }
+        
+        /* Slides Container */
+        .slides-container {
+            margin-top: 7rem;
+            padding: 1rem;
+        }
+        
+        /* Slide */
+        .slide {
+            display: none;
+            background-color: var(--white);
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+            padding: 2rem;
+            margin-bottom: 1rem;
+            min-height: 80vh;
+        }
+        
+        .slide.active {
+            display: block;
+            animation: fadeIn 0.5s;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        /* Slide Content */
+        .slide-header {
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--accent-color);
+            padding-bottom: 0.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .slide-content {
+            margin-bottom: 2rem;
+        }
+        
+        /* Typography */
+        h2 {
+            color: var(--primary-color);
+        }
+        
+        h3 {
+            color: var(--secondary-color);
+        }
+        
+        ul, ol {
+            padding-left: 2rem;
+        }
+        
+        li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .highlight {
+            color: var(--accent-color);
+            font-weight: bold;
+        }
+        
+        /* Two Column Layout */
+        .two-columns {
+            display: flex;
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+        
+        .column {
+            flex: 1;
+        }
+        
+        /* Card */
+        .card {
+            background-color: var(--light-bg);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: var(--shadow);
+        }
+        
+        .card h3 {
+            color: var(--primary-color);
+            margin-top: 0;
+        }
+        
+        /* Image Container */
+        .image-container {
+            text-align: center;
+            margin: 2rem 0;
+        }
+        
+        .image-container img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+        }
+        
+        /* Quote */
+        .quote {
+            background-color: var(--light-bg);
+            border-left: 4px solid var(--secondary-color);
+            padding: 1rem;
+            margin: 1.5rem 0;
+            font-style: italic;
+        }
+        
+        /* Comparison Table */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 2rem 0;
+        }
+        
+        th, td {
+            border: 1px solid #ddd;
+            padding: 1rem;
+            text-align: left;
+        }
+        
+        th {
+            background-color: var(--secondary-color);
+            color: var(--white);
+        }
+        
+        tr:nth-child(even) {
+            background-color: var(--light-bg);
+        }
+        
+        /* Footer */
+        footer {
+            background-color: var(--primary-color);
+            color: var(--white);
+            text-align: center;
+            padding: 1rem;
+            margin-top: 2rem;
+        }
+        
+        /* Progress Bar */
+        .progress-container {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            background-color: #ddd;
+            height: 5px;
+            z-index: 1001;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            background-color: var(--accent-color);
+            width: 0;
+        }
+        
+        /* Navigation Controls */
+        .nav-controls {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 2rem;
+        }
+        
+        .btn {
+            background-color: var(--secondary-color);
+            color: var(--white);
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        .btn:hover {
+            background-color: var(--primary-color);
+        }
+        
+        .btn-disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .two-columns {
+                flex-direction: column;
+            }
+            
+            header h1 {
+                font-size: 1.2rem;
+            }
+            
+            nav {
+                top: 3.5rem;
+            }
+            
+            .slides-container {
+                margin-top: 6.5rem;
+            }
+            
+            .slide {
+                padding: 1rem;
+            }
+            
+            nav button {
+                padding: 0.4rem 0.8rem;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Universidad Latinoamericana de Ciencia y Tecnología - ULACIT</h1>
+    </header>
+    
+    <nav id="slideNav">
+        <!-- Navigation buttons will be added dynamically by JavaScript -->
+    </nav>
+    
+    <div class="slides-container" id="slidesContainer">
+        <!-- Slide 1: Portada -->
+        <div class="slide" id="slide1">
+            <div class="slide-content" style="text-align: center; padding: 4rem 0;">
+                <h1>Introducción al Análisis Diagnóstico y Predictivo</h1>
+                <h2>Microcredencial: Inteligencia Artificial para la Toma de Decisiones Empresariales</h2>
+                <div class="image-container">
+                    <img src="/api/placeholder/800/400" alt="Análisis Diagnóstico y Predictivo" style="margin-top: 2rem; margin-bottom: 2rem;">
+                </div>
+                <p style="font-size: 1.2rem; margin-top: 2rem;">Semana 1</p>
+            </div>
+        </div>
+        
+        <!-- Slide 2: Introducción -->
+        <div class="slide" id="slide2">
+            <div class="slide-header">
+                <h2>Introducción al Análisis Diagnóstico y Predictivo</h2>
+            </div>
+            <div class="slide-content">
+                <p>En la era de los datos masivos, las organizaciones buscan cada vez más utilizar la información disponible para comprender el presente y anticipar el futuro. Esto ha llevado al desarrollo de dos enfoques complementarios:</p>
+                
+                <div class="two-columns">
+                    <div class="column card">
+                        <h3>Análisis Diagnóstico</h3>
+                        <p>Examina datos históricos para identificar <span class="highlight">causas y patrones</span> que expliquen eventos o resultados pasados.</p>
+                        <p>Responde a la pregunta: <strong>¿Por qué sucedió?</strong></p>
+                    </div>
+                    
+                    <div class="column card">
+                        <h3>Análisis Predictivo</h3>
+                        <p>Utiliza datos históricos, algoritmos estadísticos y técnicas de machine learning para <span class="highlight">anticipar resultados futuros</span>.</p>
+                        <p>Responde a la pregunta: <strong>¿Qué es probable que suceda?</strong></p>
+                    </div>
+                </div>
+                
+                <div class="quote">
+                    "La habilidad de convertir datos en información, y la información en conocimiento, se ha vuelto cada vez más crucial en el entorno empresarial actual."
+                </div>
+            </div>
+            
+            <div class="nav-controls">
+                <button class="btn" id="prevBtn2">Anterior</button>
+                <button class="btn" id="nextBtn2">Siguiente</button>
+            </div>
+        </div>
+        
+        <!-- Slide 3: Diferencias Clave -->
+        <div class="slide" id="slide3">
+            <div class="slide-header">
+                <h2>Diferencias Clave entre Análisis Diagnóstico y Predictivo</h2>
+            </div>
+            <div class="slide-content">
+                <table>
+                    <tr>
+                        <th>Característica</th>
+                        <th>Análisis Diagnóstico</th>
+                        <th>Análisis Predictivo</th>
+                    </tr>
+                    <tr>
+                        <td><strong>Orientación temporal</strong></td>
+                        <td>Pasado</td>
+                        <td>Futuro</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Objetivo principal</strong></td>
+                        <td>Comprender causas y efectos</td>
+                        <td>Anticipar resultados probables</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Métodos comunes</strong></td>
+                        <td>Análisis de causa raíz, análisis de correlación, visualización de datos</td>
+                        <td>Regresiones, árboles de decisión, redes neuronales, series temporales</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Pregunta que responde</strong></td>
+                        <td>¿Por qué sucedió?</td>
+                        <td>¿Qué es probable que suceda?</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Valor empresarial</strong></td>
+                        <td>Mejora de procesos, corrección de problemas</td>
+                        <td>Planificación estratégica, mitigación de riesgos</td>
+                    </tr>
+                </table>
+
+                <p>Aunque son distintos en su enfoque, ambos tipos de análisis son complementarios y a menudo se utilizan en conjunto para obtener una comprensión más completa de la situación empresarial.</p>
+            </div>
+            
+            <div class="nav-controls">
+                <button class="btn" id="prevBtn3">Anterior</button>
+                <button class="btn" id="nextBtn3">Siguiente</button>
+            </div>
+        </div>
+        
+        <!-- Slide 4: Ciclo de Análisis -->
+        <div class="slide" id="slide4">
+            <div class="slide-header">
+                <h2>El Ciclo del Análisis de Datos</h2>
+            </div>
+            <div class="slide-content">
+                <p>El análisis diagnóstico y predictivo forman parte de un ciclo continuo de análisis de datos que permite a las organizaciones aprovechar al máximo su información:</p>
+                
+                <div class="image-container">
+                    <img src="/api/placeholder/700/400" alt="Ciclo de Análisis de Datos">
+                </div>
+                
+                <ol>
+                    <li><strong>Análisis Descriptivo:</strong> ¿Qué ha sucedido? - Informes, dashboards, métricas</li>
+                    <li><strong>Análisis Diagnóstico:</strong> ¿Por qué sucedió? - Profundiza en las causas</li>
+                    <li><strong>Análisis Predictivo:</strong> ¿Qué podría suceder? - Modelos de pronóstico</li>
+                    <li><strong>Análisis Prescriptivo:</strong> ¿Qué deberíamos hacer? - Recomendaciones basadas en predicciones</li>
+                </ol>
+                
+                <div class="quote">
+                    "El valor real de los datos no está en su recopilación, sino en su análisis e interpretación para impulsar decisiones empresariales estratégicas."
+                </div>
+            </div>
+            
+            <div class="nav-controls">
+                <button class="btn" id="prevBtn4">Anterior</button>
+                <button class="btn" id="nextBtn4">Siguiente</button>
+            </div>
+        </div>
+        
+        <!-- Slide 5: Aplicaciones en Diversas Industrias -->
+        <div class="slide" id="slide5">
+            <div class="slide-header">
+                <h2>Aplicaciones en Diversas Industrias</h2>
+            </div>
+            <div class="slide-content">
+                <div class="two-columns">
+                    <div class="column">
+                        <div class="card">
+                            <h3>Marketing</h3>
+                            <ul>
+                                <li><strong>Diagnóstico:</strong> Análisis de campañas pasadas para determinar factores de éxito</li>
+                                <li><strong>Predictivo:</strong> Segmentación de clientes, predicción de tasas de conversión, optimización de precios</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="card">
+                            <h3>Finanzas</h3>
+                            <ul>
+                                <li><strong>Diagnóstico:</strong> Análisis de causas de variaciones presupuestarias</li>
+                                <li><strong>Predictivo:</strong> Detección de fraude, predicción de riesgos crediticios, pronósticos financieros</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="column">
+                        <div class="card">
+                            <h3>Logística y Cadena de Suministro</h3>
+                            <ul>
+                                <li><strong>Diagnóstico:</strong> Identificación de cuellos de botella en procesos</li>
+                                <li><strong>Predictivo:</strong> Optimización de inventario, predicción de demanda, planificación de rutas</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="card">
+                            <h3>Salud</h3>
+                            <ul>
+                                <li><strong>Diagnóstico:</strong> Análisis de causas de readmisiones hospitalarias</li>
+                                <li><strong>Predictivo:</strong> Detección temprana de enfermedades, predicción de epidemias, gestión de recursos</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="nav-controls">
+                <button class="btn" id="prevBtn5">Anterior</button>
+                <button class="btn" id="nextBtn5">Siguiente</button>
+            </div>
+        </div>
+        
+        <!-- Slide 6: El Papel de la IA y Machine Learning -->
+        <div class="slide" id="slide6">
+            <div class="slide-header">
+                <h2>El Papel de la IA y el Aprendizaje Automático</h2>
+            </div>
+            <div class="slide-content">
+                <p>La inteligencia artificial (IA) y el aprendizaje automático (Machine Learning) han revolucionado el análisis diagnóstico y predictivo, permitiendo:</p>
+                
+                <div class="two-columns">
+                    <div class="column">
+                        <h3>Capacidades Ampliadas</h3>
+                        <ul>
+                            <li>Procesamiento de volúmenes masivos de datos (<span class="highlight">Big Data</span>)</li>
+                            <li>Detección de patrones complejos no evidentes para el ojo humano</li>
+                            <li>Automatización de análisis repetitivos</li>
+                            <li>Aprendizaje continuo a partir de nuevos datos</li>
+                        </ul>
+                        
+                        <div class="quote">
+                            "El machine learning no solo ha mejorado la precisión de los modelos predictivos, sino que ha abierto posibilidades completamente nuevas en el diagnóstico de problemas complejos."
+                        </div>
+                    </div>
+                    
+                    <div class="column">
+                        <h3>Tecnologías Clave</h3>
+                        <div class="card">
+                            <h4>Aprendizaje Supervisado</h4>
+                            <p>Algoritmos como regresiones, árboles de decisión y redes neuronales que aprenden de datos etiquetados.</p>
+                        </div>
+                        
+                        <div class="card">
+                            <h4>Aprendizaje No Supervisado</h4>
+                            <p>Algoritmos como clustering y detección de anomalías que descubren patrones ocultos.</p>
+                        </div>
+                        
+                        <div class="card">
+                            <h4>Procesamiento de Lenguaje Natural</h4>
+                            <p>Análisis de datos no estructurados como textos, comentarios y documentos.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="nav-controls">
+                <button class="btn" id="prevBtn6">Anterior</button>
+                <button class="btn" id="nextBtn6">Siguiente</button>
+            </div>
+        </div>
+        
+        <!-- Slide 7: Desafíos y Consideraciones -->
+        <div class="slide" id="slide7">
+            <div class="slide-header">
+                <h2>Desafíos y Consideraciones</h2>
+            </div>
+            <div class="slide-content">
+                <p>A pesar de sus enormes beneficios, el análisis diagnóstico y predictivo plantea varios desafíos:</p>
+                
+                <div class="card">
+                    <h3>Calidad de los Datos</h3>
+                    <p>La precisión de cualquier análisis depende fundamentalmente de la calidad de los datos utilizados. Problemas comunes incluyen:</p>
+                    <ul>
+                        <li>Datos incompletos o faltantes</li>
+                        <li>Inconsistencias y errores</li>
+                        <li>Sesgos en la recopilación</li>
+                    </ul>
+                </div>
+                
+                <div class="card">
+                    <h3>Interpretabilidad vs. Precisión</h3>
+                    <p>Existe una tensión entre modelos más precisos pero menos interpretables (como redes neuronales complejas) y aquellos más fáciles de comprender pero potencialmente menos precisos.</p>
+                </div>
+                
+                <div class="card">
+                    <h3>Consideraciones Éticas</h3>
+                    <p>El uso responsable del análisis predictivo implica:</p>
+                    <ul>
+                        <li>Protección de la privacidad de los datos</li>
+                        <li>Evitar perpetuar sesgos existentes</li>
+                        <li>Transparencia en los métodos utilizados</li>
+                        <li>Supervisión humana de decisiones críticas</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="nav-controls">
+                <button class="btn" id="prevBtn7">Anterior</button>
+                <button class="btn" id="nextBtn7">Siguiente</button>
+            </div>
+        </div>
+        
+        <!-- Slide 8: Conclusiones -->
+        <div class="slide" id="slide8">
+            <div class="slide-header">
+                <h2>Conclusiones</h2>
+            </div>
+            <div class="slide-content">
+                <div class="two-columns">
+                    <div class="column">
+                        <h3>Puntos Clave</h3>
+                        <ul>
+                            <li>El análisis diagnóstico busca explicar el pasado, mientras que el predictivo anticipa el futuro</li>
+                            <li>Ambos enfoques son complementarios y forman parte de un ciclo continuo de análisis</li>
+                            <li>Las aplicaciones abarcan prácticamente todas las industrias</li>
+                            <li>La IA y el machine learning han potenciado enormemente estas capacidades analíticas</li>
+                            <li>Los desafíos incluyen la calidad de datos, interpretabilidad y consideraciones éticas</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="column">
+                        <h3>Mirando al Futuro</h3>
+                        <p>La evolución de la analítica diagnóstica y predictiva está llevando a:</p>
+                        <div class="card">
+                            <h4>Democratización del Análisis</h4>
+                            <p>Herramientas más accesibles que permiten a usuarios no técnicos realizar análisis complejos</p>
+                        </div>
+                        
+                        <div class="card">
+                            <h4>Análisis Aumentado</h4>
+                            <p>Sistemas que combinan la inteligencia humana con la artificial para mejores resultados</p>
+                        </div>
+                        
+                        <div class="card">
+                            <h4>Modelos Explicables</h4>
+                            <p>Desarrollo de algoritmos que mantienen la precisión pero mejoran la interpretabilidad</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="quote" style="margin-top: 2rem;">
+                    "El verdadero valor del análisis de datos no está solo en obtener respuestas, sino en formular mejores preguntas."
+                </div>
+            </div>
+            
+            <div class="nav-controls">
+                <button class="btn" id="prevBtn8">Anterior</button>
+                <button class="btn" id="nextBtn8">Siguiente</button>
+            </div>
+        </div>
+        
+        <!-- Slide 9: Referencias -->
+        <div class="slide" id="slide9">
+            <div class="slide-header">
+                <h2>Referencias y Recursos Adicionales</h2>
+            </div>
+            <div class="slide-content">
+                <h3>Bibliografía</h3>
+                <ul>
+                    <li>James, G., Witten, D., Hastie, T., & Tibshirani, R. (2013). <em>An introduction to statistical learning</em>. Springer.</li>
+                    <li>Grolemund, G., & Wickham, H. (2017). <em>R for data science</em>. O'Reilly Media.</li>
+                    <li>Boehmke, B., & Greenwell, B. (2020). <em>Hands-on machine learning with R</em>. CRC Press.</li>
+                </ul>
+                
+                <h3>Recursos en Línea</h3>
+                <ul>
+                    <li><a href="https://r4ds.had.co.nz/introduction.html" target="_blank">R for Data Science (online)</a></li>
+                    <li><a href="https://bradleyboehmke.github.io/HOML/" target="_blank">Hands-On Machine Learning with R (online)</a></li>
+                </ul>
+                
+                <h3>Herramientas Recomendadas</h3>
+                <ul>
+                    <li><strong>R y RStudio:</strong> Entorno de programación estadística</li>
+                    <li><strong>Python:</strong> Con bibliotecas como pandas, scikit-learn y TensorFlow</li>
+                    <li><strong>Tableau/Power BI:</strong> Para visualización de datos</li>
+                    <li><strong>SQL:</strong> Para manipulación y consulta de datos</li>
+                </ul>
+                
+                <div style="text-align: center; margin-top: 3rem;">
+                    <h2>¡Gracias por su atención!</h2>
+                    <p>Preguntas y comentarios son bienvenidos</p>
+                </div>
+            </div>
+            
+            <div class="nav-controls">
+                <button class="btn" id="prevBtn9">Anterior</button>
+                <button class="btn" id="nextBtn9">Volver al inicio</button>
+            </div>
+        </div>
+    </div>
+    
+    <div class="progress-container">
+        <div class="progress-bar" id="progressBar"></div>
+    </div>
+    
+    <footer>
+        <p>Microcredencial: Inteligencia Artificial para la Toma de Decisiones Empresariales</p>
+        <p>© Universidad Latinoamericana de Ciencia y Tecnología - ULACIT, 2025</p>
+    </footer>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Get elements
+            const slidesContainer = document.getElementById('slidesContainer');
+            const progressBar = document.getElementById('progressBar');
+            const slideNav = document.getElementById('slideNav');
+            
+            // Get all slides
+            const slides = document.querySelectorAll('.slide');
+            const totalSlides = slides.length;
+            
+            // Set initial active slide
+            let currentSlideIndex = 0;
+            slides[currentSlideIndex].classList.add('active');
+            
+            // Create navigation buttons
+            slides.forEach((slide, index) => {
+                const button = document.createElement('button');
+                button.textContent = `${index + 1}`;
+                button.addEventListener('click', () => {
+                    goToSlide(index);
+                });
+                slideNav.appendChild(button);
+            });
+            
+            // Update nav buttons
+            function updateNavButtons() {
+                const navButtons = slideNav.querySelectorAll('button');
+                navButtons.forEach((button, index) => {
+                    if (index === currentSlideIndex) {
+                        button.classList.add('active');
+                    } else {
+                        button.classList.remove('active');
+                    }
+                });
+            }
+            
+            // Go to specific slide
+            function goToSlide(index) {
+                if (index < 0) index = 0;
+                if (index >= totalSlides) index = 0;
+                
+                slides[currentSlideIndex].classList.remove('active');
+                currentSlideIndex = index;
+                slides[currentSlideIndex].classList.add('active');
+                
+                // Update progress bar
+                const progress = ((currentSlideIndex + 1) / totalSlides) * 100;
+                progressBar.style.width = `${progress}%`;
+                
+                // Update navigation buttons
+                updateNavButtons();
+                
+                // Scroll to top of slide
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+            }
+            
+            // Previous and Next buttons for each slide
+            for (let i = 2; i <= totalSlides; i++) {
+                const prevBtn = document.getElementById(`prevBtn${i}`);
+                const nextBtn = document.getElementById(`nextBtn${i}`);
+                
+                if (prevBtn) {
+                    prevBtn.addEventListener('click', () => {
+                        goToSlide(i - 2);
+                    });
+                }
+                
+                if (nextBtn) {
+                    nextBtn.addEventListener('click', () => {
+                        if (i === totalSlides) {
+                            goToSlide(0); // Return to first slide
+                        } else {
+                            goToSlide(i);
+                        }
+                    });
+                }
+            }
+            
+            // Keyboard navigation
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'ArrowRight' || e.key === ' ') {
+                    e.preventDefault();
+                    goToSlide(currentSlideIndex + 1);
+                } else if (e.key === 'ArrowLeft') {
+                    e.preventDefault();
+                    goToSlide(currentSlideIndex - 1);
+                }
+            });
+            
+            // Initial update
+            updateNavButtons();
+            const progress = ((currentSlideIndex + 1) / totalSlides) * 100;
+            progressBar.style.width = `${progress}%`;
+        });
+    </script>
+</body>
+</html>
