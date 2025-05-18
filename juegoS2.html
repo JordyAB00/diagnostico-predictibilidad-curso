@@ -1,0 +1,871 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StatQuest: Misión Análisis de Datos</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            color: #4a5568;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: #718096;
+            font-size: 1.1em;
+        }
+
+        .game-controls {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: #f7fafc;
+            color: #4a5568;
+            border: 2px solid #e2e8f0;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+        }
+
+        .game-board {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .team-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            border: 3px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .team-card.active {
+            border-color: #667eea;
+            transform: scale(1.02);
+        }
+
+        .team-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .team-name {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #4a5568;
+        }
+
+        .team-score {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+        }
+
+        .challenge-area {
+            background: #f7fafc;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            min-height: 150px;
+        }
+
+        .challenge-title {
+            font-weight: bold;
+            color: #2d3748;
+            margin-bottom: 15px;
+            font-size: 1.1em;
+        }
+
+        .challenge-content {
+            line-height: 1.6;
+            color: #4a5568;
+        }
+
+        .data-display {
+            background: #edf2f7;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+            border-left: 4px solid #667eea;
+        }
+
+        .answer-area {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .answer-input {
+            flex: 1;
+            min-width: 200px;
+            padding: 10px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+
+        .answer-input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .submit-btn {
+            padding: 10px 20px;
+            background: #48bb78;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .submit-btn:hover {
+            background: #38a169;
+        }
+
+        .feedback {
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 8px;
+            font-weight: bold;
+        }
+
+        .feedback.correct {
+            background: #c6f6d5;
+            color: #22543d;
+            border: 2px solid #48bb78;
+        }
+
+        .feedback.incorrect {
+            background: #fed7d7;
+            color: #742a2a;
+            border: 2px solid #e53e3e;
+        }
+
+        .timer {
+            text-align: center;
+            font-size: 2em;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 20px;
+        }
+
+        .stats-panel {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            margin-top: 30px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 15px;
+            background: #f7fafc;
+            border-radius: 10px;
+        }
+
+        .stat-value {
+            font-size: 2em;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .stat-label {
+            color: #4a5568;
+            margin-top: 5px;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+        }
+
+        .modal-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            max-width: 500px;
+            width: 90%;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #718096;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .active-challenge {
+            animation: pulse 2s infinite;
+        }
+
+        .confetti {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            background: #667eea;
+            z-index: 100;
+        }
+
+        @keyframes confetti-fall {
+            to {
+                transform: translateY(100vh) rotate(360deg);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎯 StatQuest: Misión Análisis de Datos</h1>
+            <p>Un juego interactivo para dominar los fundamentos estadísticos</p>
+        </div>
+
+        <div class="game-controls">
+            <button class="btn btn-primary" onclick="startGame()">🚀 Iniciar Juego</button>
+            <button class="btn btn-secondary" onclick="pauseGame()">⏸️ Pausar</button>
+            <button class="btn btn-secondary" onclick="resetGame()">🔄 Reiniciar</button>
+            <button class="btn btn-secondary" onclick="showInstructions()">📖 Instrucciones</button>
+        </div>
+
+        <div class="timer" id="timer">05:00</div>
+
+        <div class="game-board" id="gameBoard">
+            <!-- Los equipos se generarán dinámicamente -->
+        </div>
+
+        <div class="stats-panel">
+            <h3 style="text-align: center; margin-bottom: 20px;">📊 Estadísticas del Juego</h3>
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-value" id="totalChallenges">0</div>
+                    <div class="stat-label">Desafíos Completados</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="avgScore">0</div>
+                    <div class="stat-label">Puntuación Promedio</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="topTeam">-</div>
+                    <div class="stat-label">Equipo Líder</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="accuracy">0%</div>
+                    <div class="stat-label">Precisión General</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Instrucciones -->
+    <div class="modal" id="instructionsModal">
+        <div class="modal-content">
+            <button class="close-btn" onclick="closeModal()">&times;</button>
+            <h2>📖 Instrucciones del Juego</h2>
+            <div style="line-height: 1.8; margin-top: 20px;">
+                <h3>🎯 Objetivo:</h3>
+                <p>Resolver desafíos estadísticos en equipo y acumular puntos.</p>
+                
+                <h3>🕐 Duración:</h3>
+                <p>Cada ronda dura 5 minutos. Resuelvan tantos desafíos como puedan.</p>
+                
+                <h3>📊 Tipos de Desafíos:</h3>
+                <ul style="margin-left: 20px; margin-top: 10px;">
+                    <li><strong>Cálculo de Medidas:</strong> Media, mediana, moda, varianza</li>
+                    <li><strong>Interpretación:</strong> Análisis de distribuciones</li>
+                    <li><strong>Probabilidades:</strong> Cálculos y aplicaciones</li>
+                    <li><strong>Hipótesis:</strong> Interpretación de resultados</li>
+                </ul>
+                
+                <h3>🏆 Puntuación:</h3>
+                <ul style="margin-left: 20px; margin-top: 10px;">
+                    <li>Respuesta correcta: +10 puntos</li>
+                    <li>Respuesta parcialmente correcta: +5 puntos</li>
+                    <li>Respuesta incorrecta: 0 puntos</li>
+                </ul>
+                
+                <h3>👥 Equipos:</h3>
+                <p>Máximo 4 equipos de 4-6 personas cada uno.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Fin de Juego -->
+    <div class="modal" id="endGameModal">
+        <div class="modal-content">
+            <h2>🎉 ¡Juego Terminado!</h2>
+            <div id="finalResults" style="margin-top: 20px;"></div>
+            <button class="btn btn-primary" onclick="resetGame()" style="margin-top: 20px;">Jugar de Nuevo</button>
+        </div>
+    </div>
+
+    <script>
+        class StatQuestGame {
+            constructor() {
+                this.teams = [];
+                this.challenges = this.generateChallenges();
+                this.gameTime = 300; // 5 minutos
+                this.isGameActive = false;
+                this.currentChallengeIndex = {};
+                this.timer = null;
+                this.stats = {
+                    totalChallenges: 0,
+                    correctAnswers: 0,
+                    totalAnswers: 0
+                };
+            }
+
+            generateChallenges() {
+                return [
+                    // Medidas de tendencia central
+                    {
+                        title: "📊 Medidas de Tendencia Central",
+                        content: "Dados los siguientes valores de ventas diarias (en miles $): 12, 15, 18, 12, 20, 25, 12, 30, 18, 22",
+                        data: [12, 15, 18, 12, 20, 25, 12, 30, 18, 22],
+                        question: "Calcula la media, mediana y moda:",
+                        answer: { media: 18.4, mediana: 18, moda: 12 },
+                        tolerance: 0.1,
+                        type: "multiple"
+                    },
+                    {
+                        title: "📈 Varianza y Desviación Estándar",
+                        content: "Con los datos de satisfacción del cliente: 7, 8, 6, 9, 7, 8, 5, 9, 7, 8",
+                        data: [7, 8, 6, 9, 7, 8, 5, 9, 7, 8],
+                        question: "Calcula la varianza y desviación estándar (población):",
+                        answer: { varianza: 1.64, desvest: 1.28 },
+                        tolerance: 0.1,
+                        type: "multiple"
+                    },
+                    {
+                        title: "🎲 Probabilidad Básica",
+                        content: "En una empresa, 60% de empleados trabajan tiempo completo, 25% medio tiempo, y 15% por proyecto.",
+                        question: "¿Cuál es la probabilidad de que un empleado elegido al azar NO trabaje tiempo completo?",
+                        answer: 0.4,
+                        tolerance: 0.01,
+                        type: "single"
+                    },
+                    {
+                        title: "📊 Distribución Normal",
+                        content: "Los ingresos mensuales siguen una distribución normal con μ = $5000 y σ = $800.",
+                        question: "¿Qué porcentaje de empleados gana entre $4200 y $5800? (usa regla 68-95-99.7)",
+                        answer: 68,
+                        tolerance: 2,
+                        type: "single"
+                    },
+                    {
+                        title: "🧪 Prueba de Hipótesis",
+                        content: "Test t: H₀: μ = 100, H₁: μ ≠ 100. Resultado: t = 2.5, p-valor = 0.015",
+                        question: "Con α = 0.05, ¿se rechaza H₀? (responde: si/no)",
+                        answer: "si",
+                        tolerance: null,
+                        type: "text"
+                    },
+                    {
+                        title: "🎯 Intervalo de Confianza",
+                        content: "Muestra: n=25, media=50, σ=10. IC del 95% para la media poblacional.",
+                        question: "Calcula el margen de error (usa z=1.96):",
+                        answer: 3.92,
+                        tolerance: 0.1,
+                        type: "single"
+                    },
+                    {
+                        title: "📊 Correlación",
+                        content: "Correlación entre horas estudiadas y calificación: r = 0.75",
+                        question: "¿Qué porcentaje de la varianza en calificaciones se explica por horas estudiadas?",
+                        answer: 56.25,
+                        tolerance: 1,
+                        type: "single"
+                    },
+                    {
+                        title: "🔍 Análisis Descriptivo",
+                        content: "Dataset: 2, 4, 4, 6, 8, 10, 12, 14, 16, 18",
+                        data: [2, 4, 4, 6, 8, 10, 12, 14, 16, 18],
+                        question: "Calcula Q1, Q2 (mediana) y Q3:",
+                        answer: { q1: 4.5, q2: 9, q3: 14.5 },
+                        tolerance: 0.5,
+                        type: "multiple"
+                    }
+                ];
+            }
+
+            initializeTeams(numTeams = 4) {
+                this.teams = [];
+                const teamNames = ["🔵 Algoritmos Alpha", "🔴 Beta Análisis", "🟢 Gamma Stats", "🟡 Delta Data"];
+                
+                for (let i = 0; i < numTeams; i++) {
+                    this.teams.push({
+                        id: i,
+                        name: teamNames[i],
+                        score: 0,
+                        challengesCompleted: 0,
+                        currentChallenge: null
+                    });
+                    this.currentChallengeIndex[i] = 0;
+                }
+                this.renderTeams();
+            }
+
+            renderTeams() {
+                const gameBoard = document.getElementById('gameBoard');
+                gameBoard.innerHTML = '';
+
+                this.teams.forEach(team => {
+                    const teamCard = document.createElement('div');
+                    teamCard.className = 'team-card';
+                    teamCard.id = `team-${team.id}`;
+
+                    teamCard.innerHTML = `
+                        <div class="team-header">
+                            <div class="team-name">${team.name}</div>
+                            <div class="team-score">${team.score} pts</div>
+                        </div>
+                        <div class="challenge-area" id="challenge-${team.id}">
+                            <div class="challenge-title">¡Esperando el inicio del juego!</div>
+                            <div class="challenge-content">Prepárense para el primer desafío...</div>
+                        </div>
+                        <div class="answer-area" id="answer-${team.id}" style="display: none;">
+                            <!-- Se generará dinámicamente según el tipo de pregunta -->
+                        </div>
+                        <div class="feedback" id="feedback-${team.id}" style="display: none;"></div>
+                    `;
+
+                    gameBoard.appendChild(teamCard);
+                });
+            }
+
+            startGame() {
+                this.isGameActive = true;
+                this.initializeTeams();
+                this.assignChallenges();
+                this.startTimer();
+                
+                // Actualizar botones
+                document.querySelector('button[onclick="startGame()"]').disabled = true;
+            }
+
+            assignChallenges() {
+                this.teams.forEach(team => {
+                    this.assignChallengeToTeam(team.id);
+                });
+            }
+
+            assignChallengeToTeam(teamId) {
+                const challengeIndex = this.currentChallengeIndex[teamId];
+                if (challengeIndex >= this.challenges.length) {
+                    // Todas las preguntas completadas, asignar una nueva aleatoria
+                    const randomIndex = Math.floor(Math.random() * this.challenges.length);
+                    this.currentChallengeIndex[teamId] = randomIndex;
+                }
+
+                const challenge = this.challenges[this.currentChallengeIndex[teamId]];
+                this.teams[teamId].currentChallenge = challenge;
+
+                this.renderChallenge(teamId, challenge);
+            }
+
+            renderChallenge(teamId, challenge) {
+                const challengeArea = document.getElementById(`challenge-${teamId}`);
+                const answerArea = document.getElementById(`answer-${teamId}`);
+                const feedbackArea = document.getElementById(`feedback-${teamId}`);
+
+                // Limpiar feedback anterior
+                feedbackArea.style.display = 'none';
+
+                // Renderizar contenido del desafío
+                let challengeHTML = `
+                    <div class="challenge-title">${challenge.title}</div>
+                    <div class="challenge-content">${challenge.content}</div>
+                `;
+
+                if (challenge.data) {
+                    challengeHTML += `<div class="data-display">Datos: [${challenge.data.join(', ')}]</div>`;
+                }
+
+                challengeHTML += `<div style="margin-top: 15px; font-weight: bold; color: #2d3748;">${challenge.question}</div>`;
+
+                challengeArea.innerHTML = challengeHTML;
+
+                // Renderizar área de respuesta según el tipo
+                let answerHTML = '';
+                if (challenge.type === 'multiple') {
+                    const keys = Object.keys(challenge.answer);
+                    answerHTML = keys.map(key => `
+                        <input type="number" 
+                               class="answer-input" 
+                               placeholder="${key.charAt(0).toUpperCase() + key.slice(1)}" 
+                               id="input-${teamId}-${key}"
+                               step="0.01">
+                    `).join('');
+                } else if (challenge.type === 'single') {
+                    answerHTML = `
+                        <input type="number" 
+                               class="answer-input" 
+                               placeholder="Tu respuesta" 
+                               id="input-${teamId}-single"
+                               step="0.01">
+                    `;
+                } else if (challenge.type === 'text') {
+                    answerHTML = `
+                        <input type="text" 
+                               class="answer-input" 
+                               placeholder="Tu respuesta" 
+                               id="input-${teamId}-text">
+                    `;
+                }
+
+                answerHTML += `<button class="submit-btn" onclick="game.submitAnswer(${teamId})">Enviar</button>`;
+                answerArea.innerHTML = answerHTML;
+                answerArea.style.display = 'flex';
+
+                // Añadir animación
+                document.getElementById(`team-${teamId}`).classList.add('active-challenge');
+            }
+
+            submitAnswer(teamId) {
+                const challenge = this.teams[teamId].currentChallenge;
+                const feedbackArea = document.getElementById(`feedback-${teamId}`);
+                let isCorrect = false;
+                let points = 0;
+
+                if (challenge.type === 'multiple') {
+                    const userAnswers = {};
+                    const keys = Object.keys(challenge.answer);
+                    let correctCount = 0;
+
+                    keys.forEach(key => {
+                        const input = document.getElementById(`input-${teamId}-${key}`);
+                        userAnswers[key] = parseFloat(input.value) || 0;
+                        
+                        const tolerance = challenge.tolerance || 0.1;
+                        if (Math.abs(userAnswers[key] - challenge.answer[key]) <= tolerance) {
+                            correctCount++;
+                        }
+                    });
+
+                    if (correctCount === keys.length) {
+                        isCorrect = true;
+                        points = 10;
+                    } else if (correctCount > 0) {
+                        points = Math.floor((correctCount / keys.length) * 10);
+                    }
+
+                    feedbackArea.innerHTML = `
+                        Respuestas: ${Object.entries(userAnswers).map(([k,v]) => `${k}: ${v}`).join(', ')}<br>
+                        Correctas: ${Object.entries(challenge.answer).map(([k,v]) => `${k}: ${v}`).join(', ')}<br>
+                        Puntos obtenidos: ${points}
+                    `;
+
+                } else if (challenge.type === 'single') {
+                    const input = document.getElementById(`input-${teamId}-single`);
+                    const userAnswer = parseFloat(input.value) || 0;
+                    const tolerance = challenge.tolerance || 0.1;
+
+                    if (Math.abs(userAnswer - challenge.answer) <= tolerance) {
+                        isCorrect = true;
+                        points = 10;
+                    }
+
+                    feedbackArea.innerHTML = `
+                        Tu respuesta: ${userAnswer}<br>
+                        Respuesta correcta: ${challenge.answer}<br>
+                        Puntos obtenidos: ${points}
+                    `;
+
+                } else if (challenge.type === 'text') {
+                    const input = document.getElementById(`input-${teamId}-text`);
+                    const userAnswer = input.value.toLowerCase().trim();
+
+                    if (userAnswer === challenge.answer.toLowerCase()) {
+                        isCorrect = true;
+                        points = 10;
+                    }
+
+                    feedbackArea.innerHTML = `
+                        Tu respuesta: ${userAnswer}<br>
+                        Respuesta correcta: ${challenge.answer}<br>
+                        Puntos obtenidos: ${points}
+                    `;
+                }
+
+                // Actualizar puntuación y estadísticas
+                this.teams[teamId].score += points;
+                this.teams[teamId].challengesCompleted++;
+                this.currentChallengeIndex[teamId]++;
+
+                // Actualizar estadísticas globales
+                this.stats.totalChallenges++;
+                this.stats.totalAnswers++;
+                if (isCorrect) this.stats.correctAnswers++;
+
+                // Mostrar feedback
+                feedbackArea.className = `feedback ${isCorrect ? 'correct' : 'incorrect'}`;
+                feedbackArea.style.display = 'block';
+
+                // Actualizar UI
+                this.updateTeamScore(teamId);
+                this.updateStats();
+
+                // Efectos visuales
+                if (isCorrect) {
+                    this.showConfetti();
+                }
+
+                // Asignar nuevo desafío después de 3 segundos
+                setTimeout(() => {
+                    this.assignChallengeToTeam(teamId);
+                    document.getElementById(`team-${teamId}`).classList.remove('active-challenge');
+                }, 3000);
+            }
+
+            updateTeamScore(teamId) {
+                const scoreElement = document.querySelector(`#team-${teamId} .team-score`);
+                scoreElement.textContent = `${this.teams[teamId].score} pts`;
+            }
+
+            updateStats() {
+                document.getElementById('totalChallenges').textContent = this.stats.totalChallenges;
+                
+                const avgScore = this.teams.reduce((sum, team) => sum + team.score, 0) / this.teams.length;
+                document.getElementById('avgScore').textContent = Math.round(avgScore);
+
+                const topTeam = this.teams.reduce((max, team) => team.score > max.score ? team : max);
+                document.getElementById('topTeam').textContent = topTeam.name.split(' ')[1] || '-';
+
+                const accuracy = this.stats.totalAnswers > 0 ? 
+                    Math.round((this.stats.correctAnswers / this.stats.totalAnswers) * 100) : 0;
+                document.getElementById('accuracy').textContent = `${accuracy}%`;
+            }
+
+            startTimer() {
+                this.timer = setInterval(() => {
+                    this.gameTime--;
+                    this.updateTimerDisplay();
+
+                    if (this.gameTime <= 0) {
+                        this.endGame();
+                    }
+                }, 1000);
+            }
+
+            updateTimerDisplay() {
+                const minutes = Math.floor(this.gameTime / 60);
+                const seconds = this.gameTime % 60;
+                document.getElementById('timer').textContent = 
+                    `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            }
+
+            pauseGame() {
+                if (this.isGameActive) {
+                    clearInterval(this.timer);
+                    this.isGameActive = false;
+                    document.querySelector('button[onclick="pauseGame()"]').textContent = '▶️ Reanudar';
+                } else {
+                    this.startTimer();
+                    this.isGameActive = true;
+                    document.querySelector('button[onclick="pauseGame()"]').textContent = '⏸️ Pausar';
+                }
+            }
+
+            endGame() {
+                clearInterval(this.timer);
+                this.isGameActive = false;
+
+                // Ordenar equipos por puntuación
+                const sortedTeams = [...this.teams].sort((a, b) => b.score - a.score);
+
+                // Mostrar resultados
+                const resultsHTML = `
+                    <h3>🏆 Clasificación Final:</h3>
+                    ${sortedTeams.map((team, index) => `
+                        <div style="display: flex; justify-content: space-between; margin: 10px 0; padding: 10px; background: ${index === 0 ? '#ffd700' : '#f0f0f0'}; border-radius: 5px;">
+                            <span>${index + 1}. ${team.name}</span>
+                            <span><strong>${team.score} puntos</strong> (${team.challengesCompleted} desafíos)</span>
+                        </div>
+                    `).join('')}
+                `;
+
+                document.getElementById('finalResults').innerHTML = resultsHTML;
+                document.getElementById('endGameModal').style.display = 'block';
+
+                // Confetti para el ganador
+                if (sortedTeams.length > 0) {
+                    this.showConfetti();
+                }
+            }
+
+      resetGame() {
+                clearInterval(this.timer);
+                this.gameTime = 300;
+                this.isGameActive = false;
+                this.currentChallengeIndex = {};
+                this.stats = {
+                    totalChallenges: 0,
+                    correctAnswers: 0,
+                    totalAnswers: 0
+                };
+
+                // Limpiar interfaz
+                document.getElementById('gameBoard').innerHTML = '';
+                document.getElementById('timer').textContent = '05:00';
+                this.updateStats();
+
+                // Resetear botones
+                document.querySelector('button[onclick="startGame()"]').disabled = false;
+                document.querySelector('button[onclick="pauseGame()"]').textContent = '⏸️ Pausar';
+
+                // Cerrar modales
+                document.getElementById('endGameModal').style.display = 'none';
+                document.getElementById('instructionsModal').style.display = 'none';
+            }
+
+            showConfetti() {
+                for (let i = 0; i < 50; i++) {
+                    const confetti = document.createElement('div');
+                    confetti.className = 'confetti';
+                    confetti.style.left = Math.random() * 100 + 'vw';
+                    confetti.style.animationDelay = Math.random() * 3 + 's';
+                    confetti.style.backgroundColor = ['#667eea', '#764ba2', '#48bb78', '#ed8936'][Math.floor(Math.random() * 4)];
+                    confetti.style.animation = 'confetti-fall 3s linear forwards';
+                    document.body.appendChild(confetti);
+
+                    setTimeout(() => {
+                        confetti.remove();
+                    }, 3000);
+                }
+            }
+        }
+
+        // Inicializar el juego
+        const game = new StatQuestGame();
+
+        // Funciones globales para los botones
+        function startGame() {
+            game.startGame();
+        }
+
+        function pauseGame() {
+            game.pauseGame();
+        }
+
+        function resetGame() {
+            game.resetGame();
+        }
+
+        function showInstructions() {
+            document.getElementById('instructionsModal').style.display = 'block';
+        }
+
+        function closeModal() {
+            document.getElementById('instructionsModal').style.display = 'none';
+            document.getElementById('endGameModal').style.display = 'none';
+        }
+
+        // Cerrar modal al hacer clic fuera
+        window.onclick = function(event) {
+            const instructionsModal = document.getElementById('instructionsModal');
+            const endGameModal = document.getElementById('endGameModal');
+            
+            if (event.target === instructionsModal) {
+                instructionsModal.style.display = 'none';
+            }
+            if (event.target === endGameModal) {
+                endGameModal.style.display = 'none';
+            }
+        }
+
+        // Inicialización al cargar la página
+        document.addEventListener('DOMContentLoaded', function() {
+            game.updateStats();
+        });
+    </script>
+</body>
+</html>
