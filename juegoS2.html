@@ -1,1225 +1,982 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>R-Lab Challenge: Misión Estadística</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>R-Lab Challenge: Misión Estadística</title>
+   <style>
+       * {
+           margin: 0;
+           padding: 0;
+           box-sizing: border-box;
+       }
 
-        body {
-            font-family: 'Arial', sans-serif;
-            background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
-            min-height: 100vh;
-            color: #333;
-            line-height: 1.6;
-        }
+       body {
+           font-family: 'Arial', sans-serif;
+           background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
+           min-height: 100vh;
+           color: #333;
+           line-height: 1.6;
+       }
 
-        .container {
-            max-width: 1000px;
-            margin: 0 auto;
-            padding: 20px;
-        }
+       .container {
+           max-width: 1000px;
+           margin: 0 auto;
+           padding: 20px;
+       }
 
-        .header {
-            text-align: center;
-            background: white;
-            padding: 25px;
-            border-radius: 15px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-            margin-bottom: 25px;
-        }
+       .header {
+           text-align: center;
+           background: white;
+           padding: 25px;
+           border-radius: 15px;
+           box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+           margin-bottom: 25px;
+       }
 
-        .header h1 {
-            color: #2c3e50;
-            font-size: 2.2em;
-            margin-bottom: 10px;
-        }
+       .header h1 {
+           color: #2c3e50;
+           font-size: 2.2em;
+           margin-bottom: 10px;
+       }
 
-        .header p {
-            color: #7f8c8d;
-            font-size: 1.1em;
-        }
+       .header p {
+           color: #7f8c8d;
+           font-size: 1.1em;
+       }
 
-        .game-setup {
-            background: white;
-            padding: 25px;
-            border-radius: 15px;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
-            margin-bottom: 25px;
-        }
+       .game-setup {
+           background: white;
+           padding: 25px;
+           border-radius: 15px;
+           box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+           margin-bottom: 25px;
+       }
 
-        .setup-section {
-            margin-bottom: 20px;
-        }
+       .setup-section {
+           margin-bottom: 20px;
+       }
 
-        .setup-section h3 {
-            color: #2c3e50;
-            margin-bottom: 15px;
-            font-size: 1.3em;
-        }
+       .setup-section h3 {
+           color: #2c3e50;
+           margin-bottom: 15px;
+           font-size: 1.3em;
+       }
 
-        .player-setup {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin-bottom: 15px;
-        }
+       .player-setup {
+           display: flex;
+           flex-wrap: wrap;
+           gap: 10px;
+           margin-bottom: 15px;
+       }
 
-        .player-input {
-            padding: 8px 12px;
-            border: 2px solid #ecf0f1;
-            border-radius: 8px;
-            font-size: 14px;
-            flex: 1;
-            min-width: 150px;
-        }
+       .player-input {
+           padding: 8px 12px;
+           border: 2px solid #ecf0f1;
+           border-radius: 8px;
+           font-size: 14px;
+           flex: 1;
+           min-width: 150px;
+       }
 
-        .player-input:focus {
-            outline: none;
-            border-color: #3498db;
-        }
+       .player-input:focus {
+           outline: none;
+           border-color: #3498db;
+       }
 
-        .btn {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 14px;
-            font-weight: bold;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-            margin: 5px;
-        }
+       .btn {
+           padding: 10px 20px;
+           border: none;
+           border-radius: 8px;
+           cursor: pointer;
+           font-size: 14px;
+           font-weight: bold;
+           transition: all 0.3s ease;
+           box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+           margin: 5px;
+       }
 
-        .btn-primary {
-            background: #3498db;
-            color: white;
-        }
+       .btn-primary {
+           background: #3498db;
+           color: white;
+       }
 
-        .btn-success {
-            background: #27ae60;
-            color: white;
-        }
+       .btn-success {
+           background: #27ae60;
+           color: white;
+       }
 
-        .btn-warning {
-            background: #f39c12;
-            color: white;
-        }
+       .btn-warning {
+           background: #f39c12;
+           color: white;
+       }
 
-        .btn-danger {
-            background: #e74c3c;
-            color: white;
-        }
+       .btn-danger {
+           background: #e74c3c;
+           color: white;
+       }
 
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 15px rgba(0,0,0,0.15);
-        }
+       .btn:hover {
+           transform: translateY(-2px);
+           box-shadow: 0 6px 15px rgba(0,0,0,0.15);
+       }
 
-        .game-mode-selector {
-            display: flex;
-            gap: 15px;
-            flex-wrap: wrap;
-            margin-bottom: 20px;
-        }
+       .game-area {
+           background: white;
+           border-radius: 15px;
+           padding: 25px;
+           box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+           display: none;
+       }
 
-        .mode-card {
-            flex: 1;
-            min-width: 200px;
-            padding: 20px;
-            border: 3px solid #ecf0f1;
-            border-radius: 10px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
+       .challenge-header {
+           display: flex;
+           justify-content: space-between;
+           align-items: center;
+           margin-bottom: 20px;
+           flex-wrap: wrap;
+           gap: 15px;
+       }
 
-        .mode-card:hover {
-            border-color: #3498db;
-            background: #f8f9fa;
-        }
+       .challenge-info {
+           flex: 1;
+       }
 
-        .mode-card.selected {
-            border-color: #3498db;
-            background: #e3f2fd;
-        }
+       .challenge-title {
+           font-size: 1.5em;
+           color: #2c3e50;
+           margin-bottom: 5px;
+       }
 
-        .mode-title {
-            font-weight: bold;
-            color: #2c3e50;
-            margin-bottom: 10px;
-        }
+       .challenge-subtitle {
+           color: #7f8c8d;
+       }
 
-        .mode-description {
-            color: #7f8c8d;
-            font-size: 14px;
-        }
+       .score-panel {
+           display: flex;
+           gap: 20px;
+           flex-wrap: wrap;
+       }
 
-        .game-area {
-            background: white;
-            border-radius: 15px;
-            padding: 25px;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
-            display: none;
-        }
+       .score-item {
+           text-align: center;
+           padding: 10px 15px;
+           background: #f8f9fa;
+           border-radius: 8px;
+           min-width: 80px;
+       }
 
-        .challenge-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-            gap: 15px;
-        }
+       .score-value {
+           font-size: 1.5em;
+           font-weight: bold;
+           color: #3498db;
+       }
 
-        .challenge-info {
-            flex: 1;
-        }
+       .score-label {
+           font-size: 12px;
+           color: #7f8c8d;
+           text-transform: uppercase;
+       }
 
-        .challenge-title {
-            font-size: 1.5em;
-            color: #2c3e50;
-            margin-bottom: 5px;
-        }
+       .challenge-content {
+           background: #f8f9fa;
+           padding: 20px;
+           border-radius: 10px;
+           margin-bottom: 20px;
+       }
 
-        .challenge-subtitle {
-            color: #7f8c8d;
-        }
+       .r-code-block {
+           background: #2c3e50;
+           color: #ecf0f1;
+           padding: 15px;
+           border-radius: 8px;
+           font-family: 'Courier New', monospace;
+           font-size: 14px;
+           margin: 15px 0;
+           overflow-x: auto;
+       }
 
-        .score-panel {
-            display: flex;
-            gap: 20px;
-            flex-wrap: wrap;
-        }
+       .data-display {
+           background: #e8f4fd;
+           padding: 15px;
+           border-radius: 8px;
+           border-left: 4px solid #3498db;
+           margin: 15px 0;
+       }
 
-        .score-item {
-            text-align: center;
-            padding: 10px 15px;
-            background: #f8f9fa;
-            border-radius: 8px;
-            min-width: 80px;
-        }
+       .question-area {
+           background: white;
+           border: 2px solid #3498db;
+           border-radius: 10px;
+           padding: 20px;
+           margin-bottom: 20px;
+       }
 
-        .score-value {
-            font-size: 1.5em;
-            font-weight: bold;
-            color: #3498db;
-        }
+       .question-text {
+           font-weight: bold;
+           color: #2c3e50;
+           margin-bottom: 15px;
+       }
 
-        .score-label {
-            font-size: 12px;
-            color: #7f8c8d;
-            text-transform: uppercase;
-        }
+       .answer-section {
+           display: flex;
+           flex-wrap: wrap;
+           gap: 15px;
+           align-items: center;
+       }
 
-        .challenge-content {
-            background: #f8f9fa;
-            padding: 20px;
-            border-radius: 10px;
-            margin-bottom: 20px;
-        }
+       .answer-input {
+           padding: 10px;
+           border: 2px solid #ecf0f1;
+           border-radius: 8px;
+           font-size: 16px;
+           min-width: 150px;
+       }
 
-        .r-code-block {
-            background: #2c3e50;
-            color: #ecf0f1;
-            padding: 15px;
-            border-radius: 8px;
-            font-family: 'Courier New', monospace;
-            font-size: 14px;
-            margin: 15px 0;
-            overflow-x: auto;
-        }
+       .answer-input:focus {
+           outline: none;
+           border-color: #3498db;
+       }
 
-        .data-display {
-            background: #e8f4fd;
-            padding: 15px;
-            border-radius: 8px;
-            border-left: 4px solid #3498db;
-            margin: 15px 0;
-        }
+       .feedback {
+           padding: 15px;
+           border-radius: 8px;
+           margin-top: 15px;
+           font-weight: bold;
+           display: none;
+       }
 
-        .question-area {
-            background: white;
-            border: 2px solid #3498db;
-            border-radius: 10px;
-            padding: 20px;
-            margin-bottom: 20px;
-        }
+       .feedback.correct {
+           background: #d4edda;
+           color: #155724;
+           border: 2px solid #27ae60;
+       }
 
-        .question-text {
-            font-weight: bold;
-            color: #2c3e50;
-            margin-bottom: 15px;
-        }
+       .feedback.incorrect {
+           background: #f8d7da;
+           color: #721c24;
+           border: 2px solid #e74c3c;
+       }
 
-        .answer-section {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 15px;
-            align-items: center;
-        }
+       .feedback.partial {
+           background: #fff3cd;
+           color: #856404;
+           border: 2px solid #f39c12;
+       }
 
-        .answer-input {
-            padding: 10px;
-            border: 2px solid #ecf0f1;
-            border-radius: 8px;
-            font-size: 16px;
-            min-width: 150px;
-        }
+       .progress-bar {
+           width: 100%;
+           height: 10px;
+           background: #ecf0f1;
+           border-radius: 5px;
+           margin: 20px 0;
+           overflow: hidden;
+       }
 
-        .answer-input:focus {
-            outline: none;
-            border-color: #3498db;
-        }
+       .progress-fill {
+           height: 100%;
+           background: linear-gradient(90deg, #3498db, #27ae60);
+           transition: width 0.5s ease;
+       }
 
-        .feedback {
-            padding: 15px;
-            border-radius: 8px;
-            margin-top: 15px;
-            font-weight: bold;
-            display: none;
-        }
+       .final-results {
+           text-align: center;
+           padding: 20px;
+       }
 
-        .feedback.correct {
-            background: #d4edda;
-            color: #155724;
-            border: 2px solid #27ae60;
-        }
+       .winner-announcement {
+           font-size: 2em;
+           color: #27ae60;
+           font-weight: bold;
+           margin-bottom: 20px;
+       }
 
-        .feedback.incorrect {
-            background: #f8d7da;
-            color: #721c24;
-            border: 2px solid #e74c3c;
-        }
+       .results-table {
+           width: 100%;
+           border-collapse: collapse;
+           margin-top: 20px;
+       }
 
-        .feedback.partial {
-            background: #fff3cd;
-            color: #856404;
-            border: 2px solid #f39c12;
-        }
+       .results-table th,
+       .results-table td {
+           padding: 10px;
+           border: 1px solid #dee2e6;
+           text-align: center;
+       }
 
-        .player-turns {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin-bottom: 20px;
-        }
+       .results-table th {
+           background: #f8f9fa;
+           font-weight: bold;
+       }
 
-        .player-card {
-            padding: 10px 15px;
-            border-radius: 8px;
-            border: 2px solid #ecf0f1;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .player-card.active {
-            border-color: #3498db;
-            background: #e3f2fd;
-        }
-
-        .player-card.completed {
-            border-color: #27ae60;
-            background: #d4edda;
-        }
-
-        .player-name {
-            font-weight: bold;
-            color: #2c3e50;
-        }
-
-        .player-score {
-            font-size: 12px;
-            color: #7f8c8d;
-        }
-
-        .progress-bar {
-            width: 100%;
-            height: 10px;
-            background: #ecf0f1;
-            border-radius: 5px;
-            margin: 20px 0;
-            overflow: hidden;
-        }
-
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #3498db, #27ae60);
-            transition: width 0.5s ease;
-        }
-
-        .instructions-box {
-            background: #f8f9fa;
-            border: 2px solid #dee2e6;
-            border-radius: 10px;
-            padding: 20px;
-            margin-bottom: 20px;
-        }
-
-        .instructions-title {
-            font-weight: bold;
-            color: #2c3e50;
-            margin-bottom: 10px;
-        }
-
-        .hint-box {
-            background: #fff3cd;
-            border: 2px solid #f39c12;
-            border-radius: 8px;
-            padding: 15px;
-            margin: 15px 0;
-        }
-
-        .hint-title {
-            font-weight: bold;
-            color: #856404;
-            margin-bottom: 5px;
-        }
-
-        .final-results {
-            text-align: center;
-            padding: 20px;
-        }
-
-        .winner-announcement {
-            font-size: 2em;
-            color: #27ae60;
-            font-weight: bold;
-            margin-bottom: 20px;
-        }
-
-        .results-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-
-        .results-table th,
-        .results-table td {
-            padding: 10px;
-            border: 1px solid #dee2e6;
-            text-align: center;
-        }
-
-        .results-table th {
-            background: #f8f9fa;
-            font-weight: bold;
-        }
-
-        @media (max-width: 768px) {
-            .container {
-                padding: 10px;
-            }
-            
-            .challenge-header {
-                flex-direction: column;
-                text-align: center;
-            }
-            
-            .score-panel {
-                justify-content: center;
-            }
-            
-            .answer-section {
-                flex-direction: column;
-            }
-        }
-    </style>
-    </head>
+       @media (max-width: 768px) {
+           .container {
+               padding: 10px;
+           }
+           
+           .challenge-header {
+               flex-direction: column;
+               text-align: center;
+           }
+           
+           .score-panel {
+               justify-content: center;
+           }
+           
+           .answer-section {
+               flex-direction: column;
+           }
+       }
+   </style>
+</head>
 <body>
-    <div class="container">
-        <div class="header">
-            <h1>🧮 R-Lab Challenge: Misión Estadística</h1>
-            <p>Juego colaborativo basado en el script de fundamentos estadísticos en R</p>
-        </div>
+   <div class="container">
+       <div class="header">
+           <h1>🧮 R-Lab Challenge: Misión Estadística</h1>
+           <p>Juego colaborativo basado en fundamentos estadísticos aplicados en R</p>
+       </div>
 
-        <!-- Setup del Juego -->
-        <div class="game-setup" id="gameSetup">
-            <div class="setup-section">
-                <h3>👥 Configurar Jugadores del Equipo</h3>
-                <div class="player-setup">
-                    <input type="text" class="player-input" placeholder="Nombre del jugador 1" id="player1">
-                    <input type="text" class="player-input" placeholder="Nombre del jugador 2" id="player2">
-                    <input type="text" class="player-input" placeholder="Nombre del jugador 3" id="player3">
-                    <input type="text" class="player-input" placeholder="Nombre del jugador 4" id="player4">
-                </div>
-                <button class="btn btn-success" onclick="game.addMorePlayers()">+ Agregar más jugadores</button>
-            </div>
+       <!-- Setup del Juego -->
+       <div class="game-setup" id="gameSetup">
+           <div class="setup-section">
+               <h3>👥 Configurar Jugadores del Equipo</h3>
+               <div class="player-setup">
+                   <input type="text" class="player-input" placeholder="Nombre del jugador 1" id="player1">
+                   <input type="text" class="player-input" placeholder="Nombre del jugador 2" id="player2">
+                   <input type="text" class="player-input" placeholder="Nombre del jugador 3" id="player3">
+                   <input type="text" class="player-input" placeholder="Nombre del jugador 4" id="player4">
+               </div>
+               <button class="btn btn-success" onclick="game.addMorePlayers()">+ Agregar más jugadores</button>
+           </div>
 
-            <div class="setup-section">
-                <h3>🎮 Seleccionar Modo de Juego</h3>
-                <div class="game-mode-selector">
-                    <div class="mode-card selected" data-mode="collaborative">
-                        <div class="mode-title">🤝 Colaborativo</div>
-                        <div class="mode-description">Todo el equipo resuelve cada desafío juntos</div>
-                    </div>
-                    <div class="mode-card" data-mode="turns">
-                        <div class="mode-title">🔄 Por Turnos</div>
-                        <div class="mode-description">Cada jugador resuelve un desafío individualmente</div>
-                    </div>
-                    <div class="mode-card" data-mode="speed">
-                        <div class="mode-title">⚡ Competencia Rápida</div>
-                        <div class="mode-description">Carrera contra el tiempo, primero que responde gana</div>
-                    </div>
-                </div>
-            </div>
+           <div class="setup-section">
+               <h3>⚙️ Configuraciones del Juego</h3>
+               <label>
+                   <input type="checkbox" id="showHints" checked> Mostrar pistas de R
+               </label><br>
+               <label>
+                   <input type="checkbox" id="showCode" checked> Mostrar código de ejemplo
+               </label>
+           </div>
 
-            <div class="setup-section">
-                <h3>⚙️ Configuraciones</h3>
-                <label>
-                    <input type="checkbox" id="showHints" checked> Mostrar pistas de R
-                </label><br>
-                <label>
-                    <input type="checkbox" id="showCode" checked> Mostrar código de ejemplo
-                </label><br>
-                <label>
-                    Dificultad: 
-                    <select id="difficulty">
-                        <option value="easy">Fácil</option>
-                        <option value="medium" selected>Medio</option>
-                        <option value="hard">Difícil</option>
-                    </select>
-                </label>
-            </div>
+           <button class="btn btn-primary" onclick="game.startGame()" style="width: 100%; font-size: 18px; padding: 15px;">
+               🚀 ¡Comenzar Aventura Estadística!
+           </button>
+       </div>
 
-            <button class="btn btn-primary" onclick="game.startGame()" style="width: 100%; font-size: 18px; padding: 15px;">
-                🚀 ¡Comenzar Aventura Estadística!
-            </button>
-        </div>
+       <!-- Área del Juego -->
+       <div class="game-area" id="gameArea">
+           <div class="challenge-header">
+               <div class="challenge-info">
+                   <div class="challenge-title" id="challengeTitle">Desafío 1</div>
+                   <div class="challenge-subtitle" id="challengeSubtitle">Análisis Empresarial</div>
+               </div>
+               <div class="score-panel">
+                   <div class="score-item">
+                       <div class="score-value" id="currentScore">0</div>
+                       <div class="score-label">Puntos</div>
+                   </div>
+                   <div class="score-item">
+                       <div class="score-value" id="challengeNumber">1</div>
+                       <div class="score-label">Desafío</div>
+                   </div>
+                   <div class="score-item">
+                       <div class="score-value" id="totalChallenges">8</div>
+                       <div class="score-label">Total</div>
+                   </div>
+               </div>
+           </div>
 
-        <!-- Área del Juego -->
-        <div class="game-area" id="gameArea">
-            <div class="challenge-header">
-                <div class="challenge-info">
-                    <div class="challenge-title" id="challengeTitle">Desafío 1</div>
-                    <div class="challenge-subtitle" id="challengeSubtitle">Medidas de Tendencia Central</div>
-                </div>
-                <div class="score-panel">
-                    <div class="score-item">
-                        <div class="score-value" id="currentScore">0</div>
-                        <div class="score-label">Puntos</div>
-                    </div>
-                    <div class="score-item">
-                        <div class="score-value" id="challengeNumber">1</div>
-                        <div class="score-label">Desafío</div>
-                    </div>
-                    <div class="score-item">
-                        <div class="score-value" id="totalChallenges">8</div>
-                        <div class="score-label">Total</div>
-                    </div>
-                </div>
-            </div>
+           <div class="progress-bar">
+               <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+           </div>
 
-            <div class="progress-bar">
-                <div class="progress-fill" id="progressFill" style="width: 0%"></div>
-            </div>
+           <div class="challenge-content" id="challengeContent">
+               <!-- Contenido del desafío actual -->
+           </div>
 
-            <!-- Panel de turnos (solo visible en modo turnos) -->
-            <div class="player-turns" id="playerTurns" style="display: none;">
-                <!-- Se llenará dinámicamente -->
-            </div>
+           <div class="question-area">
+               <div class="question-text" id="questionText">
+                   <!-- Pregunta actual -->
+               </div>
+               <div class="answer-section" id="answerSection">
+                   <!-- Inputs de respuesta -->
+               </div>
+               <button class="btn btn-primary" onclick="game.submitAnswer()">Enviar Respuesta</button>
+               <button class="btn btn-warning" onclick="game.getHint()" id="hintBtn">💡 Pista</button>
+               <button class="btn btn-danger" onclick="game.skipChallenge()">⏭️ Saltar</button>
+           </div>
 
-            <div class="challenge-content" id="challengeContent">
-                <!-- Contenido del desafío actual -->
-            </div>
+           <div class="feedback" id="feedback">
+               <!-- Retroalimentación -->
+           </div>
+       </div>
 
-            <div class="question-area">
-                <div class="question-text" id="questionText">
-                    <!-- Pregunta actual -->
-                </div>
-                <div class="answer-section" id="answerSection">
-                    <!-- Inputs de respuesta -->
-                </div>
-                <button class="btn btn-primary" onclick="game.submitAnswer()">Enviar Respuesta</button>
-                <button class="btn btn-warning" onclick="game.getHint()" id="hintBtn">💡 Pista</button>
-                <button class="btn btn-danger" onclick="game.skipChallenge()">⏭️ Saltar</button>
-            </div>
+       <!-- Resultados Finales -->
+       <div class="game-area" id="finalResults" style="display: none;">
+           <div class="final-results">
+               <div class="winner-announcement" id="winnerText">
+                   🏆 ¡Misión Completada!
+               </div>
+               <div id="teamSummary" style="margin: 20px 0;"></div>
+               <table class="results-table" id="resultsTable">
+                   <!-- Tabla de resultados -->
+               </table>
+               <button class="btn btn-primary" onclick="game.resetGame()" style="margin-top: 20px;">
+                   🔄 Nueva Misión
+               </button>
+           </div>
+       </div>
+   </div>
 
-            <div class="feedback" id="feedback">
-                <!-- Retroalimentación -->
-            </div>
+   <script>
+       class RLabChallenge {
+           constructor() {
+               this.players = [];
+               this.currentChallenge = 0;
+               this.gameMode = 'collaborative';
+               this.totalScore = 0;
+               this.challengeHistory = [];
+               this.hintsUsed = 0;
+               this.gameSettings = {
+                   showHints: true,
+                   showCode: true
+               };
+               
+               this.challenges = this.generateChallenges();
+               this.setupEventListeners();
+           }
 
-            <div class="instructions-box" id="instructionsBox" style="display: none;">
-                <div class="instructions-title">📚 Instrucciones en R:</div>
-                <div id="instructionsContent"></div>
-            </div>
-        </div>
-
-        <!-- Resultados Finales -->
-        <div class="game-area" id="finalResults" style="display: none;">
-            <div class="final-results">
-                <div class="winner-announcement" id="winnerText">
-                    🏆 ¡Misión Completada!
-                </div>
-                <div id="teamSummary" style="margin: 20px 0;"></div>
-                <table class="results-table" id="resultsTable">
-                    <!-- Tabla de resultados -->
-                </table>
-                <button class="btn btn-primary" onclick="game.resetGame()" style="margin-top: 20px;">
-                    🔄 Nueva Misión
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        class RLabChallenge {
-            constructor() {
-                this.players = [];
-                this.currentChallenge = 0;
-                this.gameMode = 'collaborative';
-                this.currentPlayer = 0;
-                this.totalScore = 0;
-                this.playerScores = {};
-                this.challengeHistory = [];
-                this.hintsUsed = 0;
-                this.gameSettings = {
-                    showHints: true,
-                    showCode: true,
-                    difficulty: 'medium'
-                };
-                
-                this.challenges = this.generateChallenges();
-                this.setupEventListeners();
-            }
-
-            generateChallenges() {
-                return [
-                    {
-                        id: 1,
-                        title: "Medidas de Tendencia Central",
-                        subtitle: "Análisis básico con vectores en R",
-                        content: "Trabajarás con el vector de edades del script:",
-                        data: [23, 25, 22, 24, 26, 25, 23, 27, 24, 25],
-                        rCode: `edades <- c(23, 25, 22, 24, 26, 25, 23, 27, 24, 25)
-# Media
-mean(edades)
-# Mediana  
-median(edades)
-# Moda (función personalizada)
+           generateChallenges() {
+               return [
+                   {
+                       id: 1,
+                       title: "Interpretación de Medidas de Tendencia Central",
+                       subtitle: "Análisis empresarial con estadísticas descriptivas",
+                       content: "Una empresa de retail tiene las siguientes ventas diarias (en miles $):",
+                       data: [45, 52, 38, 47, 55, 42, 48, 51, 46, 49],
+                       rCode: `ventas <- c(45, 52, 38, 47, 55, 42, 48, 51, 46, 49)
+mean(ventas)    # Media
+median(ventas)  # Mediana
+# Función para moda
 obtener_moda <- function(x) {
-  tabla <- table(x)
-  moda <- names(tabla)[which.max(tabla)]
-  return(as.numeric(moda))
-}
-obtener_moda(edades)`,
-                        question: "Calcula la media, mediana y moda de este vector:",
-                        answers: { media: 24.4, mediana: 24.5, moda: 25 },
-                        tolerance: 0.1,
-                        hints: [
-                            "Usa mean() para la media aritmética",
-                            "Usa median() para el valor central", 
-                            "La moda es el valor más frecuente (usa la función del script)"
-                        ],
-                        maxPoints: 15
-                    },
-                    {
-                        id: 2,
-                        title: "Medidas de Dispersión",
-                        subtitle: "Varianza y desviación estándar",
-                        content: "Continuando con el vector de edades:",
-                        data: [23, 25, 22, 24, 26, 25, 23, 27, 24, 25],
-                        rCode: `# Varianza
-var(edades)
-# Desviación estándar
-sd(edades)
-# Verificar: sd = sqrt(var)
-sqrt(var(edades))`,
-                        question: "Calcula la varianza y desviación estándar:",
-                        answers: { varianza: 2.266667, desvest: 1.505543 },
-                        tolerance: 0.01,
-                        hints: [
-                            "Usa var() para varianza",
-                            "Usa sd() para desviación estándar",
-                            "Verifica que sd = sqrt(var)"
-                        ],
-                        maxPoints: 10
-                    },
-                    {
-                        id: 3,
-                        title: "Resumen Estadístico",
-                        subtitle: "Función summary() en R",
-                        content: "Usando summary() con el vector de edades:",
-                        data: [23, 25, 22, 24, 26, 25, 23, 27, 24, 25],
-                        rCode: `summary(edades)
-# También puedes usar:
-quantile(edades, c(0.25, 0.75))`,
-                        question: "¿Cuáles son el primer cuartil (Q1) y tercer cuartil (Q3)?",
-                        answers: { q1: 23.00, q3: 25.75 },
-                        tolerance: 0.01,
-                        hints: [
-                            "summary() da estadísticas completas",
-                            "Q1 = percentil 25, Q3 = percentil 75",
-                            "quantile() para percentiles específicos"
-                        ],
-                        maxPoints: 10
-                    },
-                    {
-                        id: 4,
-                        title: "Generación de Datos Normales",
-                        subtitle: "Trabajando con distribuciones",
-                        content: "Genera datos de una distribución normal como en el script:",
-                        rCode: `set.seed(123)
-datos_normales <- rnorm(100, mean = 50, sd = 10)
-mean(datos_normales)
-sd(datos_normales)`,
-                        question: "Con set.seed(123), ¿cuál es la media de rnorm(100, mean=50, sd=10)?",
-                        answers: { media: 50.10811 },
-                        tolerance: 0.01,
-                        hints: [
-                            "Usa set.seed(123) para reproducibilidad",
-                            "rnorm(n, mean, sd) genera datos normales", 
-                            "Calcula mean() de los datos generados"
-                        ],
-                        maxPoints: 10
-                    },
-                    {
-                        id: 5,
-                        title: "Prueba t de una muestra",
-                        subtitle: "Interpretando resultados estadísticos",
-                        content: "Usando el vector de edades, realizamos una prueba t:",
-                        rCode: `resultado <- t.test(edades, mu = 25)
-resultado$p.value
-# Si p-valor < 0.05, rechazamos H0`,
-                        question: "¿Cuál es el p-valor de t.test(edades, mu = 25)?",
-                        answers: { pvalor: 0.1037 },
-                        tolerance: 0.001,
-                        hints: [
-                            "t.test() realiza la prueba t",
-                            "Accede al p-valor con $p.value",
-                            "Compara con α = 0.05 para decisión"
-                        ],
-                        maxPoints: 15
-                    },
-                    {
-                        id: 6,
-                        title: "Intervalos de Confianza",
-                        subtitle: "Estimación por intervalos",
-                        content: "Calculamos el intervalo de confianza del 95% para las edades:",
-                        rCode: `intervalo <- t.test(edades)$conf.int
-intervalo[1]  # límite inferior
-intervalo[2]  # límite superior`,
-                        question: "¿Cuáles son los límites inferior y superior del IC 95%?",
-                        answers: { inferior: 23.32765, superior: 25.47235 },
-                        tolerance: 0.01,
-                        hints: [
-                            "t.test()$conf.int da el intervalo",
-                            "[1] es el límite inferior",
-                            "[2] es el límite superior"
-                        ],
-                        maxPoints: 10
-                    },
-                    {
-                        id: 7,
-                        title: "Correlación",
-                        subtitle: "Relación entre variables",
-                        content: "Análisis de correlación usando datos simulados de propinas:",
-                        rCode: `# Datos simulados basados en el dataset tips
-correlacion <- cor(tips$total_bill, tips$tip)
-correlacion
-# Test de correlación
-cor.test(tips$total_bill, tips$tip)`,
-                        question: "Si la correlación entre cuenta total y propina es 0.676, ¿qué indica esto?",
-                        answers: { correlacion: 0.676, interpretacion: "fuerte" },
-                        tolerance: 0.01,
-                        hints: [
-                            "cor() calcula correlación",
-                            "Valores entre 0.6-0.8 indican correlación fuerte",
-                            "Correlación positiva: cuando una aumenta, la otra también"
-                        ],
-                        maxPoints: 15
-                    },
-                    {
-                        id: 8,
-                        title: "Distribución Binomial",
-                        subtitle: "Trabajando con distribuciones discretas",
-                        content: "Análisis de distribución binomial del script:",
-                        rCode: `# Distribución binomial
-datos_binomial <- rbinom(50, size = 10, prob = 0.5)
-table(datos_binomial)
-mean(datos_binomial)`,
-                        question: "En rbinom(50, size=10, prob=0.5), ¿cuál es la media teórica?",
-                        answers: { media_teorica: 5 },
-                        tolerance: 0.1,
-                        hints: [
-                            "rbinom(n, size, prob) genera datos binomiales",
-                            "Media teórica = size × prob",
-                            "Para size=10 y prob=0.5: media = 10 × 0.5"
-                        ],
-                        maxPoints: 10
-                    }
-                ];
-            }
+ tabla <- table(x)
+ moda <- names(tabla)[which.max(tabla)]
+ return(as.numeric(moda))
+}`,
+                       question: "¿Cuál es la media y mediana de ventas? ¿Qué te dice esto sobre el desempeño?",
+                       answers: { media: 47.3, mediana: 47.5 },
+                       tolerance: 0.5,
+                       hints: [
+                           "La media representa el promedio de ventas",
+                           "La mediana es el valor central cuando ordenamos los datos",
+                           "Si media ≈ mediana, los datos tienen distribución simétrica"
+                       ],
+                       maxPoints: 15
+                   },
+                   {
+                       id: 2,
+                       title: "Variabilidad en Procesos de Calidad",
+                       subtitle: "Control de calidad usando desviación estándar",
+                       content: "Un proceso de manufactura produce piezas con estas medidas (mm):",
+                       data: [98.2, 101.1, 99.8, 100.5, 99.3, 102.1, 98.9, 100.7, 99.6, 101.3],
+                       rCode: `medidas <- c(98.2, 101.1, 99.8, 100.5, 99.3, 102.1, 98.9, 100.7, 99.6, 101.3)
+var(medidas)   # Varianza
+sd(medidas)    # Desviación estándar`,
+                       question: "Si el estándar es 100mm ±2mm, ¿la varianza y desviación estándar indican un proceso controlado?",
+                       answers: { varianza: 1.427, desvest: 1.195 },
+                       tolerance: 0.01,
+                       hints: [
+                           "Varianza = promedio de desviaciones al cuadrado",
+                           "Desviación estándar = raíz cuadrada de varianza",
+                           "Si SD < 2mm, el proceso está dentro de control"
+                       ],
+                       maxPoints: 10
+                   },
+                   {
+                       id: 3,
+                       title: "Análisis de Percentiles en Salarios",
+                       subtitle: "Distribución salarial de empleados",
+                       content: "Los salarios mensuales de un departamento (en miles $):",
+                       data: [35, 38, 42, 45, 48, 52, 55, 58, 62, 68],
+                       rCode: `salarios <- c(35, 38, 42, 45, 48, 52, 55, 58, 62, 68)
+summary(salarios)
+quantile(salarios, c(0.25, 0.75))`,
+                       question: "¿Cuáles son Q1 y Q3? ¿Qué significa el rango intercuartílico?",
+                       answers: { q1: 43.5, q3: 58.5 },
+                       tolerance: 0.5,
+                       hints: [
+                           "Q1 = percentil 25 (25% gana menos)",
+                           "Q3 = percentil 75 (75% gana menos)",
+                           "IQR = Q3 - Q1 = rango del 50% central"
+                       ],
+                       maxPoints: 10
+                   },
+                   {
+                       id: 4,
+                       title: "Simulación de Demanda de Productos",
+                       subtitle: "Modelado con distribución normal",
+                       content: "Simulamos la demanda diaria de un producto:",
+                       rCode: `set.seed(456)
+demanda <- rnorm(30, mean = 150, sd = 25)
+mean(demanda)
+sd(demanda)`,
+                       question: "Si generamos demanda normal(150, 25), ¿cuál sería la media esperada?",
+                       answers: { media_esperada: 150 },
+                       tolerance: 5,
+                       hints: [
+                           "rnorm(n, mean, sd) simula distribución normal",
+                           "La media de la muestra se aproxima al parámetro mean",
+                           "Con sd=25, esperamos ~68% de valores entre 125-175"
+                       ],
+                       maxPoints: 10
+                   },
+                   {
+                       id: 5,
+                       title: "Evaluación de Hipótesis de Marketing",
+                       subtitle: "Test de efectividad de campaña",
+                       content: "Evaluamos si una campaña aumentó las ventas promedio de $100:",
+                       data: [105, 112, 98, 108, 115, 102, 109, 106, 111, 104],
+                       rCode: `ventas_campana <- c(105, 112, 98, 108, 115, 102, 109, 106, 111, 104)
+t.test(ventas_campana, mu = 100)`,
+                       question: "Con α=0.05, ¿hay evidencia de que la campaña fue efectiva?",
+                       answers: { decision: "si" },
+                       tolerance: null,
+                       hints: [
+                           "H0: μ = 100 (no hay efecto)",
+                           "H1: μ > 100 (hay aumento)",
+                           "Si p-valor < 0.05, rechazamos H0"
+                       ],
+                       maxPoints: 15
+                   },
+                   {
+                       id: 6,
+                       title: "Intervalo de Confianza para Satisfacción",
+                       subtitle: "Estimación de satisfacción del cliente",
+                       content: "Puntuaciones de satisfacción (escala 1-10):",
+                       data: [7.2, 8.1, 6.9, 7.8, 8.5, 7.4, 8.2, 7.6, 8.0, 7.7],
+                       rCode: `satisfaccion <- c(7.2, 8.1, 6.9, 7.8, 8.5, 7.4, 8.2, 7.6, 8.0, 7.7)
+t.test(satisfaccion)$conf.int`,
+                       question: "¿Entre qué valores estimas que está la satisfacción promedio real (95% confianza)?",
+                       answers: { inferior: 7.3, superior: 8.1 },
+                       tolerance: 0.2,
+                       hints: [
+                           "IC del 95% contiene el verdadero promedio poblacional",
+                           "t.test()$conf.int da los límites del intervalo",
+                           "Mayor muestra = intervalo más estrecho"
+                       ],
+                       maxPoints: 10
+                   },
+                   {
+                       id: 7,
+                       title: "Correlación entre Variables de Negocio",
+                       subtitle: "Relación gastos en publicidad vs ventas",
+                       content: "Analizamos la relación entre inversión publicitaria y ventas:",
+                       simData: {
+                           publicidad: [10, 15, 20, 25, 30, 35, 40],
+                           ventas: [45, 52, 68, 81, 95, 103, 118]
+                       },
+                       rCode: `publicidad <- c(10, 15, 20, 25, 30, 35, 40)
+ventas <- c(45, 52, 68, 81, 95, 103, 118)
+cor(publicidad, ventas)`,
+                       question: "Si r = 0.98, ¿cómo interpretarías esta correlación para el negocio?",
+                       answers: { correlacion: 0.98, interpretacion: "muy_fuerte" },
+                       tolerance: 0.02,
+                       hints: [
+                           "r cerca de 1 = correlación positiva muy fuerte",
+                           "Significa que más publicidad → más ventas",
+                           "Útil para planificar presupuesto publicitario"
+                       ],
+                       maxPoints: 15
+                   },
+                   {
+                       id: 8,
+                       title: "Modelado de Eventos Exitosos",
+                       subtitle: "Probabilidad binomial en ventas",
+                       content: "Modelas la probabilidad de éxito en ventas:",
+                       rCode: `# Simular 20 intentos de venta con 60% probabilidad
+set.seed(789)
+ventas_exitosas <- rbinom(1, size = 20, prob = 0.6)
+# Valor esperado
+20 * 0.6`,
+                       question: "En 20 intentos con 60% de éxito, ¿cuántas ventas esperas en promedio?",
+                       answers: { ventas_esperadas: 12 },
+                       tolerance: 1,
+                       hints: [
+                           "Distribución binomial: n intentos, probabilidad p",
+                           "Valor esperado = n × p",
+                           "Para n=20, p=0.6: E(X) = 20 × 0.6 = 12"
+                       ],
+                       maxPoints: 10
+                   }
+               ];
+           }
 
-            setupEventListeners() {
-                // Selección de modo de juego
-                document.querySelectorAll('.mode-card').forEach(card => {
-                    card.addEventListener('click', () => {
-                        document.querySelectorAll('.mode-card').forEach(c => c.classList.remove('selected'));
-                        card.classList.add('selected');
-                        this.gameMode = card.dataset.mode;
-                    });
-                });
+           setupEventListeners() {
+               // Enter key para enviar respuestas
+               document.addEventListener('keypress', (e) => {
+                   if (e.key === 'Enter' && document.getElementById('gameArea').style.display !== 'none') {
+                       this.submitAnswer();
+                   }
+               });
+           }
 
-                // Enter key para enviar respuestas
-                document.addEventListener('keypress', (e) => {
-                    if (e.key === 'Enter' && document.getElementById('gameArea').style.display !== 'none') {
-                        this.submitAnswer();
-                    }
-                });
-            }
+           addMorePlayers() {
+               const playerSetup = document.querySelector('.player-setup');
+               const newInput = document.createElement('input');
+               const playerCount = playerSetup.children.length + 1;
+               
+               newInput.type = 'text';
+               newInput.className = 'player-input';
+               newInput.placeholder = `Nombre del jugador ${playerCount}`;
+               newInput.id = `player${playerCount}`;
+               
+               playerSetup.appendChild(newInput);
+           }
 
-            addMorePlayers() {
-                const playerSetup = document.querySelector('.player-setup');
-                const newInput = document.createElement('input');
-                const playerCount = playerSetup.children.length + 1;
-                
-                newInput.type = 'text';
-                newInput.className = 'player-input';
-                newInput.placeholder = `Nombre del jugador ${playerCount}`;
-                newInput.id = `player${playerCount}`;
-                
-                playerSetup.appendChild(newInput);
-            }
+           startGame() {
+               // Recopilar jugadores
+               this.players = [];
+               document.querySelectorAll('.player-input').forEach(input => {
+                   if (input.value.trim()) {
+                       this.players.push(input.value.trim());
+                   }
+               });
 
-            startGame() {
-                // Recopilar jugadores
-                this.players = [];
-                document.querySelectorAll('.player-input').forEach(input => {
-                    if (input.value.trim()) {
-                        this.players.push(input.value.trim());
-                    }
-                });
+               if (this.players.length === 0) {
+                   alert('¡Ingresa al menos un jugador para comenzar!');
+                   return;
+               }
 
-                if (this.players.length === 0) {
-                    alert('¡Ingresa al menos un jugador para comenzar!');
-                    return;
-                }
+               // Configuraciones del juego
+               this.gameSettings.showHints = document.getElementById('showHints').checked;
+               this.gameSettings.showCode = document.getElementById('showCode').checked;
 
-                // Configuraciones del juego
-                this.gameSettings.showHints = document.getElementById('showHints').checked;
-                this.gameSettings.showCode = document.getElementById('showCode').checked;
-                this.gameSettings.difficulty = document.getElementById('difficulty').value;
+               // Mostrar área de juego
+               document.getElementById('gameSetup').style.display = 'none';
+               document.getElementById('gameArea').style.display = 'block';
 
-                // Inicializar puntuaciones
-                this.players.forEach(player => {
-                    this.playerScores[player] = 0;
-                });
+               // Cargar primer desafío
+               this.loadChallenge(0);
+           }
 
-                // Configurar interfaz según modo de juego
-                this.setupGameMode();
+           loadChallenge(challengeIndex) {
+               if (challengeIndex >= this.challenges.length) {
+                   this.endGame();
+                   return;
+               }
 
-                // Mostrar área de juego
-                document.getElementById('gameSetup').style.display = 'none';
-                document.getElementById('gameArea').style.display = 'block';
+               this.currentChallenge = challengeIndex;
+               const challenge = this.challenges[challengeIndex];
 
-                // Cargar primer desafío
-                this.loadChallenge(0);
-            }
+               // Actualizar header
+               document.getElementById('challengeTitle').textContent = `Desafío ${challenge.id}: ${challenge.title}`;
+               document.getElementById('challengeSubtitle').textContent = challenge.subtitle;
+               document.getElementById('challengeNumber').textContent = challenge.id;
 
-            setupGameMode() {
-                const playerTurns = document.getElementById('playerTurns');
-                
-                if (this.gameMode === 'turns') {
-                    playerTurns.style.display = 'flex';
-                    this.renderPlayerTurns();
-                } else {
-                    playerTurns.style.display = 'none';
-                }
-            }
+               // Actualizar progreso
+               const progressPercent = ((challengeIndex + 1) / this.challenges.length) * 100;
+               document.getElementById('progressFill').style.width = `${progressPercent}%`;
 
-            renderPlayerTurns() {
-                const playerTurns = document.getElementById('playerTurns');
-                playerTurns.innerHTML = '';
+               // Renderizar contenido
+               this.renderChallengeContent(challenge);
+               this.renderQuestion(challenge);
 
-                this.players.forEach((player, index) => {
-                    const playerCard = document.createElement('div');
-                    playerCard.className = `player-card ${index === this.currentPlayer ? 'active' : ''}`;
-                    playerCard.innerHTML = `
-                        <div class="player-name">${player}</div>
-                        <div class="player-score">${this.playerScores[player]} puntos</div>
-                    `;
-                    playerTurns.appendChild(playerCard);
-                });
-            }
+               // Limpiar feedback anterior
+               document.getElementById('feedback').style.display = 'none';
+           }
 
-            loadChallenge(challengeIndex) {
-                if (challengeIndex >= this.challenges.length) {
-                    this.endGame();
-                    return;
-                }
+           renderChallengeContent(challenge) {
+               let content = `<h4>📊 ${challenge.content}</h4>`;
 
-                this.currentChallenge = challengeIndex;
-                const challenge = this.challenges[challengeIndex];
+               if (challenge.data) {
+                   content += `
+                       <div class="data-display">
+                           <strong>Datos: [${challenge.data.join(', ')}]</strong>
+                       </div>
+                   `;
+               }
 
-                // Actualizar header
-                document.getElementById('challengeTitle').textContent = `Desafío ${challenge.id}: ${challenge.title}`;
-                document.getElementById('challengeSubtitle').textContent = challenge.subtitle;
-                document.getElementById('challengeNumber').textContent = challenge.id;
+               if (challenge.simData) {
+                   content += `
+                       <div class="data-display">
+                           <strong>Publicidad: [${challenge.simData.publicidad.join(', ')}]</strong><br>
+                           <strong>Ventas: [${challenge.simData.ventas.join(', ')}]</strong>
+                       </div>
+                   `;
+               }
 
-                // Actualizar progreso
-                const progressPercent = ((challengeIndex + 1) / this.challenges.length) * 100;
-                document.getElementById('progressFill').style.width = `${progressPercent}%`;
+               if (this.gameSettings.showCode && challenge.rCode) {
+                   content += `
+                       <div class="r-code-block">${challenge.rCode}</div>
+                   `;
+               }
 
-                // Renderizar contenido
-                this.renderChallengeContent(challenge);
-                this.renderQuestion(challenge);
+               document.getElementById('challengeContent').innerHTML = content;
+           }
 
-                // Limpiar feedback anterior
-                document.getElementById('feedback').style.display = 'none';
+           renderQuestion(challenge) {
+               document.getElementById('questionText').textContent = challenge.question;
 
-                // Actualizar turnos si es necesario
-                if (this.gameMode === 'turns') {
-                    this.renderPlayerTurns();
-                }
-            }
+               const answerSection = document.getElementById('answerSection');
+               answerSection.innerHTML = '';
 
-            renderChallengeContent(challenge) {
-                let content = `<h4>📊 ${challenge.content}</h4>`;
+               const answerKeys = Object.keys(challenge.answers);
+               answerKeys.forEach(key => {
+                   const input = document.createElement('input');
+                   input.type = 'text';
+                   input.className = 'answer-input';
+                   input.placeholder = key.charAt(0).toUpperCase() + key.slice(1).replace('_', ' ');
+                   input.id = `answer-${key}`;
+                   
+                   // Configurar tipo de input según la respuesta esperada
+                   if (typeof challenge.answers[key] === 'number') {
+                       input.type = 'number';
+                       input.step = '0.01';
+                   }
+                   
+                   answerSection.appendChild(input);
+               });
 
-                if (challenge.data) {
-                    content += `
-                        <div class="data-display">
-                            <strong>Datos: ${challenge.data.join(', ')}</strong>
-                        </div>
-                    `;
-                }
+               // Configurar botones según configuraciones
+               document.getElementById('hintBtn').style.display = this.gameSettings.showHints ? 'inline-block' : 'none';
+           }
 
-                if (this.gameSettings.showCode && challenge.rCode) {
-                    content += `
-                        <div class="r-code-block">${challenge.rCode}</div>
-                    `;
-                }
+           submitAnswer() {
+               const challenge = this.challenges[this.currentChallenge];
+               const userAnswers = {};
+               const answerKeys = Object.keys(challenge.answers);
+               
+               // Recopilar respuestas del usuario
+               answerKeys.forEach(key => {
+                   const input = document.getElementById(`answer-${key}`);
+                   if (input.type === 'number') {
+                       userAnswers[key] = parseFloat(input.value) || 0;
+                   } else {
+                       userAnswers[key] = input.value.trim().toLowerCase();
+                   }
+               });
 
-                document.getElementById('challengeContent').innerHTML = content;
-            }
+               // Evaluar respuestas
+               let correctAnswers = 0;
+               let totalAnswers = answerKeys.length;
+               let feedback = [];
 
-            renderQuestion(challenge) {
-                document.getElementById('questionText').textContent = challenge.question;
+               answerKeys.forEach(key => {
+                   const userValue = userAnswers[key];
+                   const correctValue = challenge.answers[key];
+                   
+                   if (typeof correctValue === 'number') {
+                       const tolerance = challenge.tolerance || 0.1;
+                       if (Math.abs(userValue - correctValue) <= tolerance) {
+                           correctAnswers++;
+                           feedback.push(`✅ ${key}: ${userValue} (correcto)`);
+                       } else {
+                           feedback.push(`❌ ${key}: ${userValue} (correcto: ${correctValue})`);
+                       }
+                   } else {
+                       if (userValue === correctValue.toString().toLowerCase()) {
+                           correctAnswers++;
+                           feedback.push(`✅ ${key}: ${userValue} (correcto)`);
+                       } else {
+                           feedback.push(`❌ ${key}: ${userValue} (correcto: ${correctValue})`);
+                       }
+                   }
+               });
 
-                const answerSection = document.getElementById('answerSection');
-                answerSection.innerHTML = '';
+               // Calcular puntos
+               const pointsEarned = Math.round((correctAnswers / totalAnswers) * challenge.maxPoints);
+               
+               // Actualizar puntuación
+               this.totalScore += pointsEarned;
 
-                const answerKeys = Object.keys(challenge.answers);
-                answerKeys.forEach(key => {
-                    const input = document.createElement('input');
-                    input.type = 'text';
-                    input.className = 'answer-input';
-                    input.placeholder = key.charAt(0).toUpperCase() + key.slice(1);
-                    input.id = `answer-${key}`;
-                    
-                    // Configurar tipo de input según la respuesta esperada
-                    if (typeof challenge.answers[key] === 'number') {
-                        input.type = 'number';
-                        input.step = '0.01';
-                    }
-                    
-                    answerSection.appendChild(input);
-                });
+               // Guardar historial
+               this.challengeHistory.push({
+                   challenge: challenge.id,
+                   score: pointsEarned,
+                   maxScore: challenge.maxPoints,
+                   answers: userAnswers,
+                   correct: correctAnswers,
+                   total: totalAnswers
+               });
 
-                // Configurar botones según configuraciones
-                document.getElementById('hintBtn').style.display = this.gameSettings.showHints ? 'inline-block' : 'none';
-            }
+               // Mostrar feedback
+               this.showFeedback(correctAnswers, totalAnswers, pointsEarned, challenge.maxPoints, feedback);
 
-            submitAnswer() {
-                const challenge = this.challenges[this.currentChallenge];
-                const userAnswers = {};
-                const answerKeys = Object.keys(challenge.answers);
-                
-                // Recopilar respuestas del usuario
-                answerKeys.forEach(key => {
-                    const input = document.getElementById(`answer-${key}`);
-                    if (input.type === 'number') {
-                        userAnswers[key] = parseFloat(input.value) || 0;
-                    } else {
-                        userAnswers[key] = input.value.trim().toLowerCase();
-                    }
-                });
+               // Actualizar interfaz
+               this.updateScoreDisplay();
 
-                // Evaluar respuestas
-                let correctAnswers = 0;
-                let totalAnswers = answerKeys.length;
-                let feedback = [];
+               // Avanzar al siguiente desafío
+               setTimeout(() => {
+                   this.loadChallenge(this.currentChallenge + 1);
+               }, 3000);
+           }
 
-                answerKeys.forEach(key => {
-                    const userValue = userAnswers[key];
-                    const correctValue = challenge.answers[key];
-                    
-                    if (typeof correctValue === 'number') {
-                        const tolerance = challenge.tolerance || 0.1;
-                        if (Math.abs(userValue - correctValue) <= tolerance) {
-                            correctAnswers++;
-                            feedback.push(`✅ ${key}: ${userValue} (correcto)`);
-                        } else {
-                            feedback.push(`❌ ${key}: ${userValue} (correcto: ${correctValue})`);
-                        }
-                    } else {
-                        if (userValue === correctValue.toString().toLowerCase()) {
-                            correctAnswers++;
-                            feedback.push(`✅ ${key}: ${userValue} (correcto)`);
-                        } else {
-                            feedback.push(`❌ ${key}: ${userValue} (correcto: ${correctValue})`);
-                        }
-                    }
-                });
+           showFeedback(correct, total, points, maxPoints, details) {
+               const feedback = document.getElementById('feedback');
+               const percentage = Math.round((correct / total) * 100);
+               
+               if (percentage === 100) {
+                   feedback.className = 'feedback correct';
+                   feedback.innerHTML = `
+                       🎉 ¡Excelente! ${points}/${maxPoints} puntos<br>
+                       ${details.join('<br>')}
+                   `;
+               } else if (percentage >= 50) {
+                   feedback.className = 'feedback partial';
+                   feedback.innerHTML = `
+                       📈 Bien hecho: ${points}/${maxPoints} puntos (${percentage}% correcto)<br>
+                       ${details.join('<br>')}
+                   `;
+               } else {
+                   feedback.className = 'feedback incorrect';
+                   feedback.innerHTML = `
+                       💪 Sigue intentando: ${points}/${maxPoints} puntos<br>
+                       ${details.join('<br>')}
+                   `;
+               }
+               
+               feedback.style.display = 'block';
+           }
 
-                // Calcular puntos
-                const pointsEarned = Math.round((correctAnswers / totalAnswers) * challenge.maxPoints);
-                const currentPlayer = this.gameMode === 'turns' ? this.players[this.currentPlayer] : 'equipo';
-                
-                // Actualizar puntuaciones
-                if (this.gameMode === 'turns') {
-                    this.playerScores[this.players[this.currentPlayer]] += pointsEarned;
-                } else {
-                    this.totalScore += pointsEarned;
-                }
+           updateScoreDisplay() {
+               document.getElementById('currentScore').textContent = this.totalScore;
+           }
 
-                // Guardar historial
-                this.challengeHistory.push({
-                    challenge: challenge.id,
-                    player: currentPlayer,
-                    score: pointsEarned,
-                    maxScore: challenge.maxPoints,
-                    answers: userAnswers,
-                    correct: correctAnswers,
-                    total: totalAnswers
-                });
+           getHint() {
+               const challenge = this.challenges[this.currentChallenge];
+               if (challenge.hints && challenge.hints.length > 0) {
+                   const randomHint = challenge.hints[Math.floor(Math.random() * challenge.hints.length)];
+                   alert(`💡 Pista: ${randomHint}`);
+                   this.hintsUsed++;
+               } else {
+                   alert('No hay pistas disponibles para este desafío.');
+               }
+           }
 
-                // Mostrar feedback
-                this.showFeedback(correctAnswers, totalAnswers, pointsEarned, challenge.maxPoints, feedback);
+           skipChallenge() {
+               if (confirm('¿Estás seguro de que quieres saltar este desafío?')) {
+                   // Registrar como desafío saltado
+                   this.challengeHistory.push({
+                       challenge: this.challenges[this.currentChallenge].id,
+                       score: 0,
+                       maxScore: this.challenges[this.currentChallenge].maxPoints,
+                       skipped: true
+                   });
 
-                // Actualizar interfaz
-                this.updateScoreDisplay();
+                   this.loadChallenge(this.currentChallenge + 1);
+               }
+           }
 
-                // Avanzar al siguiente desafío o jugador
-                setTimeout(() => {
-                    this.nextTurn();
-                }, 3000);
-            }
+           endGame() {
+               // Calcular estadísticas finales
+               const totalPossiblePoints = this.challenges.reduce((sum, challenge) => sum + challenge.maxPoints, 0);
+               const percentage = Math.round((this.totalScore / totalPossiblePoints) * 100);
 
-            showFeedback(correct, total, points, maxPoints, details) {
-                const feedback = document.getElementById('feedback');
-                const percentage = Math.round((correct / total) * 100);
-                
-                if (percentage === 100) {
-                    feedback.className = 'feedback correct';
-                    feedback.innerHTML = `
-                        🎉 ¡Excelente! ${points}/${maxPoints} puntos<br>
-                        ${details.join('<br>')}
-                    `;
-                } else if (percentage >= 50) {
-                    feedback.className = 'feedback partial';
-                    feedback.innerHTML = `
-                        📈 Bien hecho: ${points}/${maxPoints} puntos (${percentage}% correcto)<br>
-                        ${details.join('<br>')}
-                    `;
-                } else {
-                    feedback.className = 'feedback incorrect';
-                    feedback.innerHTML = `
-                        💪 Sigue intentando: ${points}/${maxPoints} puntos<br>
-                        ${details.join('<br>')}
-                    `;
-                }
-                
-                feedback.style.display = 'block';
-            }
+               // Mostrar resultados finales
+               document.getElementById('gameArea').style.display = 'none';
+               document.getElementById('finalResults').style.display = 'block';
 
-            updateScoreDisplay() {
-                if (this.gameMode === 'turns') {
-                    // Mostrar puntuación total del equipo
-                    const totalTeamScore = Object.values(this.playerScores).reduce((sum, score) => sum + score, 0);
-                    document.getElementById('currentScore').textContent = totalTeamScore;
-                } else {
-                    document.getElementById('currentScore').textContent = this.totalScore;
-                }
-            }
+               // Texto del ganador
+               document.getElementById('winnerText').textContent = 
+                   `🏆 ¡Misión Completada! ${percentage}% de éxito`;
 
-            nextTurn() {
-                if (this.gameMode === 'turns') {
-                    // Avanzar al siguiente jugador
-                    this.currentPlayer = (this.currentPlayer + 1) % this.players.length;
-                    
-                    // Si completamos una ronda completa, avanzar al siguiente desafío
-                    if (this.currentPlayer === 0) {
-                        this.loadChallenge(this.currentChallenge + 1);
-                    } else {
-                        // Mismo desafío, siguiente jugador
-                        this.renderPlayerTurns();
-                        document.getElementById('feedback').style.display = 'none';
-                        
-                        // Limpiar respuestas anteriores
-                        document.querySelectorAll('.answer-input').forEach(input => input.value = '');
-                    }
-                } else {
-                    // Modo colaborativo o speed: avanzar al siguiente desafío
-                    this.loadChallenge(this.currentChallenge + 1);
-                }
-            }
+               // Resumen del equipo
+               document.getElementById('teamSummary').innerHTML = `
+                   <div style="background: #f8f9fa; padding: 20px; border-radius: 10px; margin: 20px 0;">
+                       <h3>📊 Resumen del Equipo</h3>
+                       <p><strong>Integrantes:</strong> ${this.players.join(', ')}</p>
+                       <p><strong>Puntuación Total:</strong> ${this.totalScore} / ${totalPossiblePoints} puntos</p>
+                       <p><strong>Porcentaje de éxito:</strong> ${percentage}%</p>
+                       <p><strong>Pistas utilizadas:</strong> ${this.hintsUsed}</p>
+                       <p><strong>Desafíos completados:</strong> ${this.challengeHistory.filter(h => !h.skipped).length} / ${this.challenges.length}</p>
+                   </div>
+               `;
 
-            getHint() {
-                const challenge = this.challenges[this.currentChallenge];
-                if (challenge.hints && challenge.hints.length > 0) {
-                    const randomHint = challenge.hints[Math.floor(Math.random() * challenge.hints.length)];
-                    alert(`💡 Pista: ${randomHint}`);
-                    this.hintsUsed++;
-                } else {
-                    alert('No hay pistas disponibles para este desafío.');
-                }
-            }
+               // Tabla de resultados
+               this.renderResultsTable();
+           }
 
-            skipChallenge() {
-                if (confirm('¿Estás seguro de que quieres saltar este desafío?')) {
-                    // Registrar como desafío saltado
-                    const currentPlayer = this.gameMode === 'turns' ? this.players[this.currentPlayer] : 'equipo';
-                    this.challengeHistory.push({
-                        challenge: this.challenges[this.currentChallenge].id,
-                        player: currentPlayer,
-                        score: 0,
-                        maxScore: this.challenges[this.currentChallenge].maxPoints,
-                        skipped: true
-                    });
+           renderResultsTable() {
+               const table = document.getElementById('resultsTable');
+               let tableHTML = `
+                   <thead>
+                       <tr>
+                           <th>Desafío</th>
+                           <th>Puntos Obtenidos</th>
+                           <th>Puntos Máximos</th>
+                           <th>Porcentaje</th>
+                           <th>Estado</th>
+                       </tr>
+                   </thead>
+                   <tbody>
+               `;
 
-                    this.nextTurn();
-                }
-            }
+               this.challengeHistory.forEach(record => {
+                   const percentage = Math.round((record.score / record.maxScore) * 100);
+                   const status = record.skipped ? 'Saltado' : (percentage === 100 ? 'Perfecto' : percentage >= 50 ? 'Bien' : 'Mejorable');
+                   const statusColor = record.skipped ? '#6c757d' : (percentage === 100 ? '#28a745' : percentage >= 50 ? '#ffc107' : '#dc3545');
+                   
+                   tableHTML += `
+                       <tr>
+                           <td>Desafío ${record.challenge}</td>
+                           <td>${record.score}</td>
+                           <td>${record.maxScore}</td>
+                           <td>${percentage}%</td>
+                           <td style="color: ${statusColor}; font-weight: bold;">${status}</td>
+                       </tr>
+                   `;
+               });
 
-            endGame() {
-                // Calcular estadísticas finales
-                const totalPossiblePoints = this.challenges.reduce((sum, challenge) => sum + challenge.maxPoints, 0);
-                const finalScore = this.gameMode === 'turns' 
-                    ? Object.values(this.playerScores).reduce((sum, score) => sum + score, 0)
-                    : this.totalScore;
-                
-                const totalPossible = totalPossiblePoints * (this.gameMode === 'turns' ? this.players.length : 1);
-                const percentage = Math.round((finalScore / totalPossible) * 100);
+               // Agregar totales
+               const totalPossiblePoints = this.challenges.reduce((sum, challenge) => sum + challenge.maxPoints, 0);
+               const overallPercentage = Math.round((this.totalScore / totalPossiblePoints) * 100);
+               
+               tableHTML += `
+                   <tr style="border-top: 2px solid #dee2e6; font-weight: bold; background-color: #f8f9fa;">
+                       <td>TOTAL</td>
+                       <td>${this.totalScore}</td>
+                       <td>${totalPossiblePoints}</td>
+                       <td>${overallPercentage}%</td>
+                       <td style="color: ${overallPercentage >= 80 ? '#28a745' : overallPercentage >= 60 ? '#ffc107' : '#dc3545'};">
+                           ${overallPercentage >= 80 ? 'Excelente' : overallPercentage >= 60 ? 'Bueno' : 'Necesita práctica'}
+                       </td>
+                   </tr>
+               `;
 
-                // Mostrar resultados finales
-                document.getElementById('gameArea').style.display = 'none';
-                document.getElementById('finalResults').style.display = 'block';
+               tableHTML += '</tbody>';
+               table.innerHTML = tableHTML;
+           }
 
-                // Texto del ganador
-                document.getElementById('winnerText').textContent = 
-                    `🏆 ¡Misión Completada! ${percentage}% de éxito`;
+           resetGame() {
+               // Reiniciar todas las variables
+               this.currentChallenge = 0;
+               this.totalScore = 0;
+               this.challengeHistory = [];
+               this.hintsUsed = 0;
 
-                // Resumen del equipo
-                document.getElementById('teamSummary').innerHTML = `
-                    <div style="background: #f8f9fa; padding: 20px; border-radius: 10px; margin: 20px 0;">
-                        <h3>📊 Resumen del Equipo</h3>
-                        <p><strong>Puntuación Total:</strong> ${finalScore} / ${totalPossible} puntos</p>
-                        <p><strong>Porcentaje de éxito:</strong> ${percentage}%</p>
-                        <p><strong>Pistas utilizadas:</strong> ${this.hintsUsed}</p>
-                        <p><strong>Desafíos completados:</strong> ${this.challengeHistory.filter(h => !h.skipped).length} / ${this.challenges.length * (this.gameMode === 'turns' ? this.players.length : 1)}</p>
-                    </div>
-                `;
+               // Mostrar setup nuevamente
+               document.getElementById('finalResults').style.display = 'none';
+               document.getElementById('gameArea').style.display = 'none';
+               document.getElementById('gameSetup').style.display = 'block';
 
-                // Tabla de resultados
-                this.renderResultsTable();
-            }
+               // Limpiar inputs de jugadores
+               document.querySelectorAll('.player-input').forEach(input => {
+                   input.value = '';
+               });
 
-            renderResultsTable() {
-                const table = document.getElementById('resultsTable');
-                let tableHTML = '';
+               // Resetear configuraciones
+               document.getElementById('showHints').checked = true;
+               document.getElementById('showCode').checked = true;
 
-                if (this.gameMode === 'turns') {
-                    // Tabla por jugadores
-                    tableHTML = `
-                        <thead>
-                            <tr>
-                                <th>Jugador</th>
-                                <th>Puntos</th>
-                                <th>Desafíos</th>
-                                <th>Promedio</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                    `;
+               // Resetear progreso
+               document.getElementById('progressFill').style.width = '0%';
+               document.getElementById('currentScore').textContent = '0';
+           }
+       }
 
-                    this.players.forEach(player => {
-                        const playerChallenges = this.challengeHistory.filter(h => h.player === player);
-                        const playerScore = this.playerScores[player];
-                        const average = playerChallenges.length > 0 ? (playerScore / playerChallenges.length).toFixed(1) : 0;
-                        
-                        tableHTML += `
-                            <tr>
-                                <td>${player}</td>
-                                <td>${playerScore}</td>
-                                <td>${playerChallenges.length}</td>
-                                <td>${average}</td>
-                            </tr>
-                        `;
-                    });
-
-                    tableHTML += '</tbody>';
-                } else {
-                    // Tabla por desafíos
-                    tableHTML = `
-                        <thead>
-                            <tr>
-                                <th>Desafío</th>
-                                <th>Puntos</th>
-                                <th>Máximo</th>
-                                <th>%</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                    `;
-
-                    this.challengeHistory.forEach(record => {
-                        const percentage = Math.round((record.score / record.maxScore) * 100);
-                        tableHTML += `
-                            <tr>
-                                <td>Desafío ${record.challenge}</td>
-                                <td>${record.score}</td>
-                                <td>${record.maxScore}</td>
-                                <td>${percentage}%</td>
-                            </tr>
-                        `;
-                    });
-
-                    tableHTML += '</tbody>';
-                }
-
-                table.innerHTML = tableHTML;
-            }
-
-            resetGame() {
-                // Reiniciar todas las variables
-                this.currentChallenge = 0;
-                this.currentPlayer = 0;
-                this.totalScore = 0;
-                this.playerScores = {};
-                this.challengeHistory = [];
-                this.hintsUsed = 0;
-
-                // Mostrar setup nuevamente
-                document.getElementById('finalResults').style.display = 'none';
-                document.getElementById('gameArea').style.display = 'none';
-                document.getElementById('gameSetup').style.display = 'block';
-
-                // Limpiar inputs de jugadores
-                document.querySelectorAll('.player-input').forEach(input => {
-                    input.value = '';
-                });
-
-                // Resetear configuraciones
-                document.getElementById('showHints').checked = true;
-                document.getElementById('showCode').checked = true;
-                document.getElementById('difficulty').value = 'medium';
-
-                // Resetear modo de juego
-                document.querySelectorAll('.mode-card').forEach(c => c.classList.remove('selected'));
-                document.querySelector('.mode-card[data-mode="collaborative"]').classList.add('selected');
-                this.gameMode = 'collaborative';
-          }
-        }
-
-        // Inicializar el juego cuando se carga la página
-        const game = new RLabChallenge();
-    </script>
+       // Inicializar el juego cuando se carga la página
+       const game = new RLabChallenge();
+   </script>
 </body>
 </html>
