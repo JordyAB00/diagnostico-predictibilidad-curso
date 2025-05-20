@@ -338,6 +338,24 @@
 .feedback strong {
     color: #2c3e50;
 }
+      #continueBtn {
+    margin-top: 15px;
+    background: linear-gradient(45deg, #28a745, #20c997);
+    border: none;
+    box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+    transition: all 0.3s ease;
+}
+
+#continueBtn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(40, 167, 69, 0.4);
+}
+
+.answer-input:disabled {
+    background-color: #e9ecef;
+    opacity: 0.6;
+    cursor: not-allowed;
+}
    </style>
 </head>
 <body>
@@ -713,32 +731,51 @@ ventas_exitosas <- rbinom(1, size = 20, prob = 0.6)
                this.loadChallenge(0);
            }
 
-           loadChallenge(challengeIndex) {
-               if (challengeIndex >= this.challenges.length) {
-                   this.endGame();
-                   return;
-               }
+loadChallenge(challengeIndex) {
+    if (challengeIndex >= this.challenges.length) {
+        this.endGame();
+        return;
+    }
 
-               this.currentChallenge = challengeIndex;
-               const challenge = this.challenges[challengeIndex];
+    this.currentChallenge = challengeIndex;
+    const challenge = this.challenges[challengeIndex];
 
-               // Actualizar header
-               document.getElementById('challengeTitle').textContent = `Desafío ${challenge.id}: ${challenge.title}`;
-               document.getElementById('challengeSubtitle').textContent = challenge.subtitle;
-               document.getElementById('challengeNumber').textContent = challenge.id;
+    // Actualizar header
+    document.getElementById('challengeTitle').textContent = `Desafío ${challenge.id}: ${challenge.title}`;
+    document.getElementById('challengeSubtitle').textContent = challenge.subtitle;
+    document.getElementById('challengeNumber').textContent = challenge.id;
 
-               // Actualizar progreso
-               const progressPercent = ((challengeIndex + 1) / this.challenges.length) * 100;
-               document.getElementById('progressFill').style.width = `${progressPercent}%`;
+    // Actualizar progreso
+    const progressPercent = ((challengeIndex + 1) / this.challenges.length) * 100;
+    document.getElementById('progressFill').style.width = `${progressPercent}%`;
 
-               // Renderizar contenido
-               this.renderChallengeContent(challenge);
-               this.renderQuestion(challenge);
+    // Renderizar contenido
+    this.renderChallengeContent(challenge);
+    this.renderQuestion(challenge);
 
-               // Limpiar feedback anterior
-               document.getElementById('feedback').style.display = 'none';
-           }
-
+    // Limpiar feedback anterior
+    document.getElementById('feedback').style.display = 'none';
+    
+    // Restablecer botones originales
+    this.resetButtons();
+}
+          resetButtons() {
+    // Mostrar botones originales
+    const originalButtons = document.querySelectorAll('.question-area .btn:not(#continueBtn)');
+    originalButtons.forEach(btn => btn.style.display = 'inline-block');
+    
+    // Ocultar botón continuar
+    const continueBtn = document.getElementById('continueBtn');
+    if (continueBtn) {
+        continueBtn.style.display = 'none';
+    }
+    
+    // Habilitar inputs nuevamente
+    document.querySelectorAll('.answer-input').forEach(input => {
+        input.disabled = false;
+        input.value = ''; // Limpiar valores anteriores
+    });
+}
            renderChallengeContent(challenge) {
                let content = `<h4>📊 ${challenge.content}</h4>`;
 
@@ -796,75 +833,109 @@ ventas_exitosas <- rbinom(1, size = 20, prob = 0.6)
            }
 
            submitAnswer() {
-               const challenge = this.challenges[this.currentChallenge];
-               const userAnswers = {};
-               const answerKeys = Object.keys(challenge.answers);
-               
-               // Recopilar respuestas del usuario
-               answerKeys.forEach(key => {
-                   const input = document.getElementById(`answer-${key}`);
-                   if (input.type === 'number') {
-                       userAnswers[key] = parseFloat(input.value) || 0;
-                   } else {
-                       userAnswers[key] = input.value.trim().toLowerCase();
-                   }
-               });
+    const challenge = this.challenges[this.currentChallenge];
+    const userAnswers = {};
+    const answerKeys = Object.keys(challenge.answers);
+    
+    // Recopilar respuestas del usuario
+    answerKeys.forEach(key => {
+        const input = document.getElementById(`answer-${key}`);
+        if (input.type === 'number') {
+            userAnswers[key] = parseFloat(input.value) || 0;
+        } else {
+            userAnswers[key] = input.value.trim().toLowerCase();
+        }
+    });
 
-               // Evaluar respuestas
-               let correctAnswers = 0;
-               let totalAnswers = answerKeys.length;
-               let feedback = [];
+    // Evaluar respuestas
+    let correctAnswers = 0;
+    let totalAnswers = answerKeys.length;
+    let feedback = [];
 
-               answerKeys.forEach(key => {
-                   const userValue = userAnswers[key];
-                   const correctValue = challenge.answers[key];
-                   
-                   if (typeof correctValue === 'number') {
-                       const tolerance = challenge.tolerance || 0.1;
-                       if (Math.abs(userValue - correctValue) <= tolerance) {
-                           correctAnswers++;
-                           feedback.push(`✅ ${key}: ${userValue} (correcto)`);
-                       } else {
-                           feedback.push(`❌ ${key}: ${userValue} (correcto: ${correctValue})`);
-                       }
-                   } else {
-                       if (userValue === correctValue.toString().toLowerCase()) {
-                           correctAnswers++;
-                           feedback.push(`✅ ${key}: ${userValue} (correcto)`);
-                       } else {
-                           feedback.push(`❌ ${key}: ${userValue} (correcto: ${correctValue})`);
-                       }
-                   }
-               });
+    answerKeys.forEach(key => {
+        const userValue = userAnswers[key];
+        const correctValue = challenge.answers[key];
+        
+        if (typeof correctValue === 'number') {
+            const tolerance = challenge.tolerance || 0.1;
+            if (Math.abs(userValue - correctValue) <= tolerance) {
+                correctAnswers++;
+                feedback.push(`✅ ${key}: ${userValue} (correcto)`);
+            } else {
+                feedback.push(`❌ ${key}: ${userValue} (correcto: ${correctValue})`);
+            }
+        } else {
+            if (userValue === correctValue.toString().toLowerCase()) {
+                correctAnswers++;
+                feedback.push(`✅ ${key}: ${userValue} (correcto)`);
+            } else {
+                feedback.push(`❌ ${key}: ${userValue} (correcto: ${correctValue})`);
+            }
+        }
+    });
 
-               // Calcular puntos
-               const pointsEarned = Math.round((correctAnswers / totalAnswers) * challenge.maxPoints);
-               
-               // Actualizar puntuación
-               this.totalScore += pointsEarned;
+    // Calcular puntos
+    const pointsEarned = Math.round((correctAnswers / totalAnswers) * challenge.maxPoints);
+    
+    // Actualizar puntuación
+    this.totalScore += pointsEarned;
 
-               // Guardar historial
-               this.challengeHistory.push({
-                   challenge: challenge.id,
-                   score: pointsEarned,
-                   maxScore: challenge.maxPoints,
-                   answers: userAnswers,
-                   correct: correctAnswers,
-                   total: totalAnswers
-               });
+    // Guardar historial
+    this.challengeHistory.push({
+        challenge: challenge.id,
+        score: pointsEarned,
+        maxScore: challenge.maxPoints,
+        answers: userAnswers,
+        correct: correctAnswers,
+        total: totalAnswers
+    });
 
-               // Mostrar feedback
-               this.showFeedback(correctAnswers, totalAnswers, pointsEarned, challenge.maxPoints, feedback);
+    // Mostrar feedback
+    this.showFeedback(correctAnswers, totalAnswers, pointsEarned, challenge.maxPoints, feedback);
 
-               // Actualizar interfaz
-               this.updateScoreDisplay();
+    // Actualizar interfaz
+    this.updateScoreDisplay();
 
-               // Avanzar al siguiente desafío
-               setTimeout(() => {
-                   this.loadChallenge(this.currentChallenge + 1);
-               }, 3000);
-           }
+    // Ocultar botones de respuesta y mostrar botón continuar
+    this.showContinueButton();
+}
 
+showContinueButton() {
+    // Ocultar botones originales
+    const buttons = document.querySelectorAll('.question-area .btn');
+    buttons.forEach(btn => btn.style.display = 'none');
+    
+    // Crear botón continuar si no existe
+    let continueBtn = document.getElementById('continueBtn');
+    if (!continueBtn) {
+        continueBtn = document.createElement('button');
+        continueBtn.id = 'continueBtn';
+        continueBtn.className = 'btn btn-primary';
+        continueBtn.style.fontSize = '18px';
+        continueBtn.style.padding = '12px 30px';
+        continueBtn.onclick = () => this.continueToNext();
+        document.querySelector('.question-area').appendChild(continueBtn);
+    }
+    
+    // Configurar texto del botón según si es el último desafío
+    if (this.currentChallenge >= this.challenges.length - 1) {
+        continueBtn.textContent = '🏁 Ver Resultados Finales';
+    } else {
+        continueBtn.textContent = `➡️ Continuar al Desafío ${this.currentChallenge + 2}`;
+    }
+    
+    continueBtn.style.display = 'inline-block';
+    
+    // Deshabilitar inputs para evitar cambios
+    document.querySelectorAll('.answer-input').forEach(input => {
+        input.disabled = true;
+    });
+}
+
+          continueToNext() {
+    // Avanzar al siguiente desafío
+    this.loadChallenge(this.currentChallenge + 1);
+}
            showFeedback(correct, total, points, maxPoints, details) {
     const feedback = document.getElementById('feedback');
     const challenge = this.challenges[this.currentChallenge];
@@ -922,18 +993,19 @@ ventas_exitosas <- rbinom(1, size = 20, prob = 0.6)
            }
 
            skipChallenge() {
-               if (confirm('¿Estás seguro de que quieres saltar este desafío?')) {
-                   // Registrar como desafío saltado
-                   this.challengeHistory.push({
-                       challenge: this.challenges[this.currentChallenge].id,
-                       score: 0,
-                       maxScore: this.challenges[this.currentChallenge].maxPoints,
-                       skipped: true
-                   });
+    if (confirm('¿Estás seguro de que quieres saltar este desafío?')) {
+        // Registrar como desafío saltado
+        this.challengeHistory.push({
+            challenge: this.challenges[this.currentChallenge].id,
+            score: 0,
+            maxScore: this.challenges[this.currentChallenge].maxPoints,
+            skipped: true
+        });
 
-                   this.loadChallenge(this.currentChallenge + 1);
-               }
-           }
+        // Avanzar directamente (sin mostrar botón continuar)
+        this.loadChallenge(this.currentChallenge + 1);
+    }
+}
 
            endGame() {
                // Calcular estadísticas finales
