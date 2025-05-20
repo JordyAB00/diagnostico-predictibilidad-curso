@@ -327,6 +327,17 @@
                flex-direction: column;
            }
        }
+      .feedback code {
+    background: #e9ecef;
+    padding: 2px 4px;
+    border-radius: 3px;
+    font-family: 'Courier New', monospace;
+    color: #495057;
+}
+
+.feedback strong {
+    color: #2c3e50;
+}
    </style>
 </head>
 <body>
@@ -448,169 +459,211 @@
            }
 
            generateChallenges() {
-               return [
-                   {
-                       id: 1,
-                       title: "Interpretación de Medidas de Tendencia Central",
-                       subtitle: "Análisis empresarial con estadísticas descriptivas",
-                       content: "Una empresa de retail tiene las siguientes ventas diarias (en miles $):",
-                       data: [45, 52, 38, 47, 55, 42, 48, 51, 46, 49],
-                       rCode: `ventas <- c(45, 52, 38, 47, 55, 42, 48, 51, 46, 49)
+    return [
+        {
+            id: 1,
+            title: "Interpretación de Medidas de Tendencia Central",
+            subtitle: "Análisis empresarial con estadísticas descriptivas",
+            content: "Una empresa de retail tiene las siguientes ventas diarias (en miles $):",
+            data: [45, 52, 38, 47, 55, 42, 48, 51, 46, 49],
+            rCode: `ventas <- c(45, 52, 38, 47, 55, 42, 48, 51, 46, 49)
 mean(ventas)    # Media
-median(ventas)  # Mediana
-# Función para moda
-obtener_moda <- function(x) {
- tabla <- table(x)
- moda <- names(tabla)[which.max(tabla)]
- return(as.numeric(moda))
-}`,
-                       question: "¿Cuál es la media y mediana de ventas? ¿Qué te dice esto sobre el desempeño?",
-                       answers: { media: 47.3, mediana: 47.5 },
-                       tolerance: 0.5,
-                       hints: [
-                           "La media representa el promedio de ventas",
-                           "La mediana es el valor central cuando ordenamos los datos",
-                           "Si media ≈ mediana, los datos tienen distribución simétrica"
-                       ],
-                       maxPoints: 15
-                   },
-                   {
-                       id: 2,
-                       title: "Variabilidad en Procesos de Calidad",
-                       subtitle: "Control de calidad usando desviación estándar",
-                       content: "Un proceso de manufactura produce piezas con estas medidas (mm):",
-                       data: [98.2, 101.1, 99.8, 100.5, 99.3, 102.1, 98.9, 100.7, 99.6, 101.3],
-                       rCode: `medidas <- c(98.2, 101.1, 99.8, 100.5, 99.3, 102.1, 98.9, 100.7, 99.6, 101.3)
+median(ventas)  # Mediana`,
+            question: "¿Cuál es la media y mediana de ventas? ¿Qué te dice esto sobre el desempeño?",
+            answers: { media: 47.3, mediana: 47.5 },
+            tolerance: 0.5,
+            hints: [
+                "La media representa el promedio de ventas",
+                "La mediana es el valor central cuando ordenamos los datos",
+                "Si media ≈ mediana, los datos tienen distribución simétrica"
+            ],
+            explanation: `
+                <strong>📚 Camino para resolver:</strong><br>
+                1. Usar <code>mean(ventas)</code> para calcular el promedio: (45+52+38+47+55+42+48+51+46+49)/10 = 47.3<br>
+                2. Usar <code>median(ventas)</code> para encontrar el valor central: ordenar datos y tomar el promedio de posiciones 5 y 6<br>
+                3. <strong>Interpretación:</strong> Como media ≈ mediana (47.3 ≈ 47.5), las ventas tienen una distribución equilibrada sin valores extremos que distorsionen el promedio.
+            `,
+            maxPoints: 15
+        },
+        {
+            id: 2,
+            title: "Variabilidad en Procesos de Calidad",
+            subtitle: "Control de calidad usando desviación estándar",
+            content: "Un proceso de manufactura produce piezas con estas medidas (mm):",
+            data: [98.2, 101.1, 99.8, 100.5, 99.3, 102.1, 98.9, 100.7, 99.6, 101.3],
+            rCode: `medidas <- c(98.2, 101.1, 99.8, 100.5, 99.3, 102.1, 98.9, 100.7, 99.6, 101.3)
 var(medidas)   # Varianza
 sd(medidas)    # Desviación estándar`,
-                       question: "Si el estándar es 100mm ±2mm, ¿la varianza y desviación estándar indican un proceso controlado?",
-                       answers: { varianza: 1.427, desvest: 1.195 },
-                       tolerance: 0.01,
-                       hints: [
-                           "Varianza = promedio de desviaciones al cuadrado",
-                           "Desviación estándar = raíz cuadrada de varianza",
-                           "Si SD < 2mm, el proceso está dentro de control"
-                       ],
-                       maxPoints: 10
-                   },
-                   {
-                       id: 3,
-                       title: "Análisis de Percentiles en Salarios",
-                       subtitle: "Distribución salarial de empleados",
-                       content: "Los salarios mensuales de un departamento (en miles $):",
-                       data: [35, 38, 42, 45, 48, 52, 55, 58, 62, 68],
-                       rCode: `salarios <- c(35, 38, 42, 45, 48, 52, 55, 58, 62, 68)
+            question: "Si el estándar es 100mm ±2mm, ¿la varianza y desviación estándar indican un proceso controlado?",
+            answers: { varianza: 1.427, desvest: 1.195 },
+            tolerance: 0.01,
+            hints: [
+                "Varianza = promedio de desviaciones al cuadrado",
+                "Desviación estándar = raíz cuadrada de varianza",
+                "Si SD < 2mm, el proceso está dentro de control"
+            ],
+            explanation: `
+                <strong>📚 Camino para resolver:</strong><br>
+                1. Calcular varianza con <code>var(medidas)</code>: promedio de (xi - media)² = 1.427<br>
+                2. Calcular desviación estándar con <code>sd(medidas)</code>: √varianza = 1.195<br>
+                3. <strong>Interpretación:</strong> Como SD = 1.195 < 2mm, el proceso está CONTROLADO. Las piezas varían poco respecto al objetivo.
+            `,
+            maxPoints: 10
+        },
+        {
+            id: 3,
+            title: "Análisis de Percentiles en Salarios",
+            subtitle: "Distribución salarial de empleados",
+            content: "Los salarios mensuales de un departamento (en miles $):",
+            data: [35, 38, 42, 45, 48, 52, 55, 58, 62, 68],
+            rCode: `salarios <- c(35, 38, 42, 45, 48, 52, 55, 58, 62, 68)
 summary(salarios)
 quantile(salarios, c(0.25, 0.75))`,
-                       question: "¿Cuáles son Q1 y Q3? ¿Qué significa el rango intercuartílico?",
-                       answers: { q1: 43.5, q3: 58.5 },
-                       tolerance: 0.5,
-                       hints: [
-                           "Q1 = percentil 25 (25% gana menos)",
-                           "Q3 = percentil 75 (75% gana menos)",
-                           "IQR = Q3 - Q1 = rango del 50% central"
-                       ],
-                       maxPoints: 10
-                   },
-                   {
-                       id: 4,
-                       title: "Simulación de Demanda de Productos",
-                       subtitle: "Modelado con distribución normal",
-                       content: "Simulamos la demanda diaria de un producto:",
-                       rCode: `set.seed(456)
+            question: "¿Cuáles son Q1 y Q3? ¿Qué significa el rango intercuartílico?",
+            answers: { q1: 43.5, q3: 58.5 },
+            tolerance: 0.5,
+            hints: [
+                "Q1 = percentil 25 (25% gana menos)",
+                "Q3 = percentil 75 (75% gana menos)",
+                "IQR = Q3 - Q1 = rango del 50% central"
+            ],
+            explanation: `
+                <strong>📚 Camino para resolver:</strong><br>
+                1. Usar <code>quantile(salarios, 0.25)</code> para Q1 = 43.5 (25% gana menos de $43.5k)<br>
+                2. Usar <code>quantile(salarios, 0.75)</code> para Q3 = 58.5 (75% gana menos de $58.5k)<br>
+                3. <strong>Interpretación:</strong> IQR = 58.5 - 43.5 = $15k. El 50% central tiene salarios entre $43.5k y $58.5k.
+            `,
+            maxPoints: 10
+        },
+        {
+            id: 4,
+            title: "Simulación de Demanda de Productos",
+            subtitle: "Modelado con distribución normal",
+            content: "Simulamos la demanda diaria de un producto:",
+            rCode: `set.seed(456)
 demanda <- rnorm(30, mean = 150, sd = 25)
 mean(demanda)
 sd(demanda)`,
-                       question: "Si generamos demanda normal(150, 25), ¿cuál sería la media esperada?",
-                       answers: { media_esperada: 150 },
-                       tolerance: 5,
-                       hints: [
-                           "rnorm(n, mean, sd) simula distribución normal",
-                           "La media de la muestra se aproxima al parámetro mean",
-                           "Con sd=25, esperamos ~68% de valores entre 125-175"
-                       ],
-                       maxPoints: 10
-                   },
-                   {
-                       id: 5,
-                       title: "Evaluación de Hipótesis de Marketing",
-                       subtitle: "Test de efectividad de campaña",
-                       content: "Evaluamos si una campaña aumentó las ventas promedio de $100:",
-                       data: [105, 112, 98, 108, 115, 102, 109, 106, 111, 104],
-                       rCode: `ventas_campana <- c(105, 112, 98, 108, 115, 102, 109, 106, 111, 104)
+            question: "Si generamos demanda normal(150, 25), ¿cuál sería la media esperada?",
+            answers: { media_esperada: 150 },
+            tolerance: 5,
+            hints: [
+                "rnorm(n, mean, sd) simula distribución normal",
+                "La media de la muestra se aproxima al parámetro mean",
+                "Con sd=25, esperamos ~68% de valores entre 125-175"
+            ],
+            explanation: `
+                <strong>📚 Camino para resolver:</strong><br>
+                1. <code>rnorm(30, mean=150, sd=25)</code> genera 30 valores de distribución normal<br>
+                2. El parámetro <code>mean=150</code> es la media poblacional esperada<br>
+                3. <strong>Interpretación:</strong> Por ley de grandes números, la media muestral converge a 150. Útil para planificar inventario basado en demanda esperada.
+            `,
+            maxPoints: 10
+        },
+        {
+            id: 5,
+            title: "Evaluación de Hipótesis de Marketing",
+            subtitle: "Test de efectividad de campaña",
+            content: "Evaluamos si una campaña aumentó las ventas promedio de $100:",
+            data: [105, 112, 98, 108, 115, 102, 109, 106, 111, 104],
+            rCode: `ventas_campana <- c(105, 112, 98, 108, 115, 102, 109, 106, 111, 104)
 t.test(ventas_campana, mu = 100)`,
-                       question: "Con α=0.05, ¿hay evidencia de que la campaña fue efectiva?",
-                       answers: { decision: "si" },
-                       tolerance: null,
-                       hints: [
-                           "H0: μ = 100 (no hay efecto)",
-                           "H1: μ > 100 (hay aumento)",
-                           "Si p-valor < 0.05, rechazamos H0"
-                       ],
-                       maxPoints: 15
-                   },
-                   {
-                       id: 6,
-                       title: "Intervalo de Confianza para Satisfacción",
-                       subtitle: "Estimación de satisfacción del cliente",
-                       content: "Puntuaciones de satisfacción (escala 1-10):",
-                       data: [7.2, 8.1, 6.9, 7.8, 8.5, 7.4, 8.2, 7.6, 8.0, 7.7],
-                       rCode: `satisfaccion <- c(7.2, 8.1, 6.9, 7.8, 8.5, 7.4, 8.2, 7.6, 8.0, 7.7)
+            question: "Con α=0.05, ¿hay evidencia de que la campaña fue efectiva?",
+            answers: { decision: "si" },
+            tolerance: null,
+            hints: [
+                "H0: μ = 100 (no hay efecto)",
+                "H1: μ > 100 (hay aumento)",
+                "Si p-valor < 0.05, rechazamos H0"
+            ],
+            explanation: `
+                <strong>📚 Camino para resolver:</strong><br>
+                1. Plantear hipótesis: H0: μ = 100 vs H1: μ > 100<br>
+                2. Usar <code>t.test(ventas_campana, mu = 100)</code> para obtener p-valor<br>
+                3. <strong>Interpretación:</strong> Si p < 0.05, rechazamos H0. Hay evidencia estadística de que la campaña SÍ aumentó las ventas promedio.
+            `,
+            maxPoints: 15
+        },
+        {
+            id: 6,
+            title: "Intervalo de Confianza para Satisfacción",
+            subtitle: "Estimación de satisfacción del cliente",
+            content: "Puntuaciones de satisfacción (escala 1-10):",
+            data: [7.2, 8.1, 6.9, 7.8, 8.5, 7.4, 8.2, 7.6, 8.0, 7.7],
+            rCode: `satisfaccion <- c(7.2, 8.1, 6.9, 7.8, 8.5, 7.4, 8.2, 7.6, 8.0, 7.7)
 t.test(satisfaccion)$conf.int`,
-                       question: "¿Entre qué valores estimas que está la satisfacción promedio real (95% confianza)?",
-                       answers: { inferior: 7.3, superior: 8.1 },
-                       tolerance: 0.2,
-                       hints: [
-                           "IC del 95% contiene el verdadero promedio poblacional",
-                           "t.test()$conf.int da los límites del intervalo",
-                           "Mayor muestra = intervalo más estrecho"
-                       ],
-                       maxPoints: 10
-                   },
-                   {
-                       id: 7,
-                       title: "Correlación entre Variables de Negocio",
-                       subtitle: "Relación gastos en publicidad vs ventas",
-                       content: "Analizamos la relación entre inversión publicitaria y ventas:",
-                       simData: {
-                           publicidad: [10, 15, 20, 25, 30, 35, 40],
-                           ventas: [45, 52, 68, 81, 95, 103, 118]
-                       },
-                       rCode: `publicidad <- c(10, 15, 20, 25, 30, 35, 40)
+            question: "¿Entre qué valores estimas que está la satisfacción promedio real (95% confianza)?",
+            answers: { inferior: 7.3, superior: 8.1 },
+            tolerance: 0.2,
+            hints: [
+                "IC del 95% contiene el verdadero promedio poblacional",
+                "t.test()$conf.int da los límites del intervalo",
+                "Mayor muestra = intervalo más estrecho"
+            ],
+            explanation: `
+                <strong>📚 Camino para resolver:</strong><br>
+                1. Usar <code>t.test(satisfaccion)$conf.int</code> para obtener límites del intervalo<br>
+                2. El IC 95% significa: 95% de probabilidad de que μ real esté en este rango<br>
+                3. <strong>Interpretación:</strong> Con 95% confianza, la satisfacción promedio real está entre 7.3 y 8.1. ¡Buenos niveles de satisfacción!
+            `,
+            maxPoints: 10
+        },
+        {
+            id: 7,
+            title: "Correlación entre Variables de Negocio",
+            subtitle: "Relación gastos en publicidad vs ventas",
+            content: "Analizamos la relación entre inversión publicitaria y ventas:",
+            simData: {
+                publicidad: [10, 15, 20, 25, 30, 35, 40],
+                ventas: [45, 52, 68, 81, 95, 103, 118]
+            },
+            rCode: `publicidad <- c(10, 15, 20, 25, 30, 35, 40)
 ventas <- c(45, 52, 68, 81, 95, 103, 118)
 cor(publicidad, ventas)`,
-                       question: "Si r = 0.98, ¿cómo interpretarías esta correlación para el negocio?",
-                       answers: { correlacion: 0.98, interpretacion: "muy_fuerte" },
-                       tolerance: 0.02,
-                       hints: [
-                           "r cerca de 1 = correlación positiva muy fuerte",
-                           "Significa que más publicidad → más ventas",
-                           "Útil para planificar presupuesto publicitario"
-                       ],
-                       maxPoints: 15
-                   },
-                   {
-                       id: 8,
-                       title: "Modelado de Eventos Exitosos",
-                       subtitle: "Probabilidad binomial en ventas",
-                       content: "Modelas la probabilidad de éxito en ventas:",
-                       rCode: `# Simular 20 intentos de venta con 60% probabilidad
+            question: "Si r = 0.98, ¿cómo interpretarías esta correlación para el negocio?",
+            answers: { correlacion: 0.98, interpretacion: "muy_fuerte" },
+            tolerance: 0.02,
+            hints: [
+                "r cerca de 1 = correlación positiva muy fuerte",
+                "Significa que más publicidad → más ventas",
+                "Útil para planificar presupuesto publicitario"
+            ],
+            explanation: `
+                <strong>📚 Camino para resolver:</strong><br>
+                1. Usar <code>cor(publicidad, ventas)</code> para calcular coeficiente de correlación<br>
+                2. r = 0.98 indica correlación positiva MUY FUERTE (casi perfecta)<br>
+                3. <strong>Interpretación:</strong> Cada $1 extra en publicidad aumenta ventas consistentemente. Ideal para ROI de marketing y presupuesto.
+            `,
+            maxPoints: 15
+        },
+        {
+            id: 8,
+            title: "Modelado de Eventos Exitosos",
+            subtitle: "Probabilidad binomial en ventas",
+            content: "Modelas la probabilidad de éxito en ventas:",
+            rCode: `# Simular 20 intentos de venta con 60% probabilidad
 set.seed(789)
 ventas_exitosas <- rbinom(1, size = 20, prob = 0.6)
 # Valor esperado
 20 * 0.6`,
-                       question: "En 20 intentos con 60% de éxito, ¿cuántas ventas esperas en promedio?",
-                       answers: { ventas_esperadas: 12 },
-                       tolerance: 1,
-                       hints: [
-                           "Distribución binomial: n intentos, probabilidad p",
-                           "Valor esperado = n × p",
-                           "Para n=20, p=0.6: E(X) = 20 × 0.6 = 12"
-                       ],
-                       maxPoints: 10
-                   }
-               ];
-           }
+            question: "En 20 intentos con 60% de éxito, ¿cuántas ventas esperas en promedio?",
+            answers: { ventas_esperadas: 12 },
+            tolerance: 1,
+            hints: [
+                "Distribución binomial: n intentos, probabilidad p",
+                "Valor esperado = n × p",
+                "Para n=20, p=0.6: E(X) = 20 × 0.6 = 12"
+            ],
+            explanation: `
+                <strong>📚 Camino para resolver:</strong><br>
+                1. Identificar distribución binomial: n=20 intentos, p=0.6 probabilidad de éxito<br>
+                2. Calcular valor esperado: E(X) = n × p = 20 × 0.6 = 12<br>
+                3. <strong>Interpretación:</strong> En promedio, esperas 12 ventas exitosas de 20 intentos. Útil para planificar objetivos de equipo de ventas.
+            `,
+            maxPoints: 10
+        }
+    ];
+}
 
            setupEventListeners() {
                // Enter key para enviar respuestas
@@ -813,31 +866,45 @@ ventas_exitosas <- rbinom(1, size = 20, prob = 0.6)
            }
 
            showFeedback(correct, total, points, maxPoints, details) {
-               const feedback = document.getElementById('feedback');
-               const percentage = Math.round((correct / total) * 100);
-               
-               if (percentage === 100) {
-                   feedback.className = 'feedback correct';
-                   feedback.innerHTML = `
-                       🎉 ¡Excelente! ${points}/${maxPoints} puntos<br>
-                       ${details.join('<br>')}
-                   `;
-               } else if (percentage >= 50) {
-                   feedback.className = 'feedback partial';
-                   feedback.innerHTML = `
-                       📈 Bien hecho: ${points}/${maxPoints} puntos (${percentage}% correcto)<br>
-                       ${details.join('<br>')}
-                   `;
-               } else {
-                   feedback.className = 'feedback incorrect';
-                   feedback.innerHTML = `
-                       💪 Sigue intentando: ${points}/${maxPoints} puntos<br>
-                       ${details.join('<br>')}
-                   `;
-               }
-               
-               feedback.style.display = 'block';
-           }
+    const feedback = document.getElementById('feedback');
+    const challenge = this.challenges[this.currentChallenge];
+    const percentage = Math.round((correct / total) * 100);
+    
+    let feedbackHTML = '';
+    
+    if (percentage === 100) {
+        feedbackHTML = `
+            <div class="feedback correct">
+                🎉 ¡Excelente! ${points}/${maxPoints} puntos<br>
+                ${details.join('<br>')}
+            </div>
+        `;
+    } else if (percentage >= 50) {
+        feedbackHTML = `
+            <div class="feedback partial">
+                📈 Bien hecho: ${points}/${maxPoints} puntos (${percentage}% correcto)<br>
+                ${details.join('<br>')}
+            </div>
+        `;
+    } else {
+        feedbackHTML = `
+            <div class="feedback incorrect">
+                💪 Sigue intentando: ${points}/${maxPoints} puntos<br>
+                ${details.join('<br>')}
+            </div>
+        `;
+    }
+    
+    // Agregar explicación educativa
+    feedbackHTML += `
+        <div style="margin-top: 20px; padding: 15px; background: #f8f9fa; border-radius: 8px; border-left: 4px solid #17a2b8;">
+            ${challenge.explanation}
+        </div>
+    `;
+    
+    feedback.innerHTML = feedbackHTML;
+    feedback.style.display = 'block';
+}
 
            updateScoreDisplay() {
                document.getElementById('currentScore').textContent = this.totalScore;
